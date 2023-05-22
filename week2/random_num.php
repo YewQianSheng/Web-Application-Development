@@ -3,7 +3,7 @@
 
 <head>
     <title>random_num</title>
-    <link rel="stylesheet" type="text/css" href="random_num.css">
+    <link rel="stylesheet" type="text/css" href="css/random_num.css">
 </head>
 
 <body>
