@@ -8,9 +8,9 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col">
+            <div class="col text-primary">
                 <label for="daySelect">Day:</label>
-                <select class="form-select bg-lightblue" id="daySelect">
+                <select class="form-select " id="daySelect">
                     <?php
                     for ($day = 1; $day <= 31; $day++) {
                         echo "<option value='$day'>$day</option>";
@@ -18,9 +18,9 @@
                     ?>
                 </select>
             </div>
-            <div class="col">
+            <div class="col text-warning">
                 <label for="monthSelect">Month:</label>
-                <select class="form-select bg-yellow" id="monthSelect">
+                <select class="form-select " id="monthSelect">
                     <?php
                     for ($month = 1; $month <= 12; $month++) {
                         echo "<option value='$month'>$month</option>";
@@ -28,9 +28,9 @@
                     ?>
                 </select>
             </div>
-            <div class="col">
+            <div class="col text-danger">
                 <label for="yearSelect">Year:</label>
-                <select class="form-select bg-red" id="yearSelect">
+                <select class="form-select" id="yearSelect">
                     <?php
                     $currentYear = date('Y');
                     for ($year = 1900; $year <= $currentYear; $year++) {
