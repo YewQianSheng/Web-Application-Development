@@ -7,7 +7,7 @@
         for ($j = 1; $j <= $i; $j++) {
             echo "*";
         }
-        echo "\n";
+        echo '<br>';
     }
     ?>
 

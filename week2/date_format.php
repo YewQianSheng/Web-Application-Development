@@ -9,8 +9,8 @@
     $today = date('M d, Y (D)');
     $current_time = date('H:i:s');
 
-    echo $today . "\n";
-    echo $current_time;
+    echo $today . '<br>' . $current_time;
+
     ?>
 
 
