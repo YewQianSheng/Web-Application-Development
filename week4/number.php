@@ -32,12 +32,12 @@
             $number = (int)$number;
             $sum = 0;
 
-            for ($i = $number; $i >= 1; $i--) {
+            for ($i = intval($number); $i >= 1; $i--) {
                 $sum += $i;
             }
 
             echo "<h3>Sum:</h3>";
-            echo implode('+', range(1, $number)) . ' = ' . $sum;
+            echo implode('+', range($number, 1)) . ' = ' . $sum;
         }
     }
     ?>
