@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <h2>Number Sum</h2>
+    <h2>Question 4</h2>
 
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <label for="number">Number:</label>

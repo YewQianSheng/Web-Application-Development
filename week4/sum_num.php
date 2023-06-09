@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <h2>Number Adder</h2>
+    <h2>Question 3</h2>
 
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <label for="number1">Number 1:</label>

@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <h2>Name Formatter</h2>
+    <h2>Question 2</h2>
 
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <label for="firstName">First Name:</label>
