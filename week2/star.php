@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+    <title>Star</title>
+</head>
+
 <body>
     <?php
     for ($i = 10; $i >= 1; $i--) {
