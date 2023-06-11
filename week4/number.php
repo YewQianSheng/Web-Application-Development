@@ -36,7 +36,7 @@
                 $sum += $i;
             }
 
-            echo "<h3>Sum:</h3>";
+            echo "<h3>Answer:</h3>";
             echo implode('+', range($number, 1)) . ' = ' . $sum;
         }
     }

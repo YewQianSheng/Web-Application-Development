@@ -35,7 +35,7 @@
         } else {
             $sum = $number1 + $number2;
 
-            echo "<h3>Sum:</h3>";
+            echo "<h3>total:</h3>";
             echo $sum;
         }
     }

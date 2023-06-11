@@ -34,8 +34,8 @@
             $formattedFirstName = ucwords(strtolower($firstName));
             $formattedLastName = ucwords(strtolower($lastName));
 
-            echo "<h3>Formatted Name:</h3>";
-            echo "$formattedLastName $formattedFirstName";
+            echo "<h3>Full Name:</h3>";
+            echo "$formattedFirstName $formattedLastName";
         }
     }
     ?>
