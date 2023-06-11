@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+    <title>Date Format</title>
+</head>
+
 <body>
 
     <?php
