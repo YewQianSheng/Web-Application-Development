@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Name_Put</title>
+    <title>Question1</title>
     <style>
         .error {
             color: red;
@@ -73,7 +73,7 @@
 
             $current_year = date('Y');
             $age = $current_year - $year;
-
+            //朋友的生日还有几天 他会帮你算出来
             $birthdate = strtotime("$year-$month-$day");
             $age = date('Y') - date('Y', $birthdate);
             if (date('md') < date('md', $birthdate)) {
