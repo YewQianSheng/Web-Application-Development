@@ -71,6 +71,12 @@
                 <label for="username" class="form-label">Username:</label>
                 <input type="text" class="form-control" id="username" name="username" pattern="[a-zA-Z][a-zA-Z0-9_-]{5,}" title="Username must start with a letter, and can only contain letters, numbers, underscore, or hyphen." required>
             </div>
+            <!-- (?=.*[a-z]) 这部分的意思是，密码中必须包含至少一个小写字母。 -->
+            <!-- (?=.*[A-Z]) 这部分的意思是，密码中必须包含至少一个大写字母。 -->
+            <!-- (?=.*\d) 这部分的意思是，密码中必须包含至少一个数字。 -->
+            <!-- (?!.*[-+$()%@#]) 这部分的意思是，密码中不能包含特殊字符（如减号、加号、括号、百分号、美元符号、at符号等）。 -->
+            <!-- .{6,} 这部分的意思是，整个密码的长度必须至少是6个字符或更长。-->
+            <!-- ^ 必须 -->
             <div class="mb-3">
                 <label for="password" class="form-label">Password:</label>
                 <input type="password" class="form-control" id="password" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$" title="Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number." required>
