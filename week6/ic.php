@@ -11,23 +11,22 @@
         <h1>Malaysian IC Validation</h1>
         <form method="POST" action="">
             <label for="ic_number">Enter Malaysian IC Number:</label><br>
-            <input type="text" id="ic_number" name="ic_number" required>
+            <input type="text" id="ic_number" name="ic_number" required pattern="[0-9]{6}-[0-9]{2}-[0-9]{4}">
             <small>(Format: 123456-78-9012)</small><br><br>
             <input type="submit" value="Submit">
         </form>
         <?php
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $icNumber = $_POST["ic_number"];
+            $pattern = "/^[0-9]{6}-[0-9]{2}-[0-9]{4}$/";
             $month = array('JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'OGO', 'SEP', 'OCT', 'NOV', 'DEC');
-            // Remove any non-digit characters from the IC number
-            $icNumber = preg_replace("/[^0-9]/", "", $icNumber);
 
             // Check if the IC number is valid
-            if (strlen($icNumber) === 12) {
+            if (preg_match($pattern, $icNumber)) {
                 $birthYear = substr($icNumber, 0, 2);
                 $birthMonth = substr($icNumber, 2, 2);
                 $birthDay = substr($icNumber, 4, 2);
-                $stateCode = substr($icNumber, 6, 2);
+                $stateCode = substr($icNumber, 7, 2);
                 if (($birthYear + 2000) > date('Y')) {
                     $year = $birthYear + 1900;
                 } else {
