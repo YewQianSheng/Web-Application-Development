@@ -17,39 +17,42 @@
             include 'config/database.php';
             try {
                 // insert query
-                $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created, promotion_price=:promotion, manufacture_date=:manufacture, expired_date=:expired ";
+                $query = "INSERT INTO contact SET name=:name, description=:description, email=:email  ";
                 // prepare query for execution
                 $stmt = $con->prepare($query);
                 $name = $_POST['name'];
                 $description = $_POST['description'];
-                $price = $_POST['price'];
-                $promotion = $_POST['promotion'];
-                $manufacture = $_POST['manufacture'];
-                $expired = $_POST['expired'];
-                if ($promotion >= $price) {
-                    echo "<div class='alert alert-danger'>Promotion price must be cheaper than original price
-                    </div>";
+                $email = $_POST['email'];
+
+                if (!preg_match('/^[a-zA-Z][a-zA-Z0-9 ]{5,}$/', $name)) {
+                    $errors[] = "Invalid username format.";
                 }
-                if ($expired <= $manufacture) {
-                    echo "<div class='alert alert-danger'>Expired date must be later than manufacture date</div>";
+
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "Invalid email format.";
+                }
+                if (!empty($errors)) {
+                    echo "<div class='alert alert-danger m-3'>";
+                    foreach ($errors as $displayError) {
+                        echo $displayError . "<br>";
+                    }
+                    echo "</div>";
                 } else {
+
                     // bind the parameters
                     $stmt->bindParam(':name', $name);
                     $stmt->bindParam(':description', $description);
-                    $stmt->bindParam(':price', $price);
-                    $created = date('Y-m-d H:i:s'); // get the current date and time
-                    $stmt->bindParam(':created', $created);
-                    $stmt->bindParam(':promotion', $promotion);
-                    $stmt->bindParam(':manufacture', $manufacture);
-                    $stmt->bindParam(':expired', $expired);
+                    $stmt->bindParam(':email', $email);
+
                     // Execute the query
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was saved.</div>";
+                        $_POST = array();
                     } else {
                         echo "<div class='alert alert-danger'>Unable to save record.</div>";
                     }
                 }
-            }      // show error
+            }   // show error
             catch (PDOException $exception) {
                 die('ERROR: ' . $exception->getMessage());
             }
@@ -61,11 +64,12 @@
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
                     <td>Name</td>
-                    <td><input type='text' name='name' class='form-control' pattern='^[A-Za-z\s]+$' title='Please enter a valid name (letters and spaces only).' /></td>
+                    <td><input type='text' name='name' class='form-control' pattern='^[A-Za-z\s]+$' value=" <?php echo isset($_POST['name']) ? $_POST['name'] : ''; ?>" title='Please enter a valid name (letters and spaces only).' /></td>
+
                 </tr>
                 <tr>
                     <td>email</td>
-                    <td> <input type="email" class="form-control" id="email" name="email" required></td>
+                    <td> <input type="email" class="form-control" id="email" value="<?php echo isset($_POST['name']) ? $_POST['name'] : ''; ?>" name="email"></td>
                 </tr>
 
                 <td>Message</td>
@@ -73,8 +77,9 @@
                 </tr>
                 <tr>
                 <tr>
+                    <td></td>
                     <td>
-                        <input type='submit' value='Save' class='btn btn-primary' />
+                        <input type='submit' value='submit' class='btn btn-primary' />
                     </td>
                 </tr>
             </table>

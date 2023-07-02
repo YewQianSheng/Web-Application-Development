@@ -27,8 +27,7 @@
 
         <div class="container col-lg-auto text-left mx-auto bg-light">
             <h2>About Us</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu odio et dolor gravida auctor. Mauris pellentesque, nunc nec interdum facilisis, ligula neque gravida nisi, ac suscipit tortor sem at nisl.</p>
-            <p>Nullam sed purus ullamcorper, tempus sapien eu, consequat dui. Proin pharetra urna et mi eleifend, a condimentum est venenatis. Aenean cursus elit in risus feugiat dignissim.</p>
+            <p>~~</p>
         </div>
 
     </div>

@@ -19,7 +19,7 @@
             include 'config/database.php';
             try {
                 // insert query
-                $query = "INSERT INTO customer SET username=:username, password=:password, first_name=:first_name, last_name=:last_name, gender=:gender, birth=:dob, registration_date=:registration";
+                $query = "INSERT INTO customer SET username=:username, password=:password, first_name=:first_name, last_name=:last_name, gender=:gender, birth=:dob, status=:status , registration_date=:registration";
                 // prepare query for execution
                 $stmt = $con->prepare($query);
                 $username = $_POST['username'];
@@ -31,13 +31,14 @@
                 $dob_day = $_POST['dob_day'];
                 $dob_month = $_POST['dob_month'];
                 $dob_year = $_POST['dob_year'];
+                $status = $_POST['status'];
 
 
                 $formattedFirstName = ucwords(strtolower($first_name));
                 $formattedLastName = ucwords(strtolower($last_name));
                 $formattedgender = ucwords(strtolower($gender));
                 $errors = [];
-                if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_-]{5,}$/', $username)) {
+                if (!preg_match('/^[a-zA-Z][a-zA-Z0-9 ]{5,}$/', $username)) {
                     $errors[] = "Invalid username format.";
                 }
 
@@ -64,34 +65,38 @@
                     $errors[] = "Date of birth is required.";
                 }
 
+                if (empty($status)) {
+                    $errors[] = 'Account status is required.';
+                }
+
                 if (!empty($errors)) {
-                    echo '<script>';
-                    echo 'alert("Error:\n';
-                    foreach ($errors as $error) {
-                        echo addslashes($error) . '\n';
+                    echo "<div class='alert alert-danger m-3'>";
+                    foreach ($errors as $displayError) {
+                        echo $displayError . "<br>";
                     }
-                    echo '");';
-                    echo 'window.location.href = "customer.php";';
-                    echo '</script>';
-                    exit;
-                }
-                // bind the parameters
-                $stmt->bindParam(':username', $username);
-                $stmt->bindParam(':password', $password);
-                $stmt->bindParam(':first_name', $first_name);
-                $stmt->bindParam(':last_name', $last_name);
-                $stmt->bindParam(':gender', $gender);
-                $dob = $dob_year . '-' . $dob_month . '-' . $dob_day;
-                $stmt->bindParam(':dob', $dob);
-                $registration = date('Y-m-d H:i:s'); // get the current date and time
-                $stmt->bindParam(':registration', $registration);
-                // Execute the query
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Record was saved.</div>";
+                    echo "</div>";
                 } else {
-                    echo "<div class='alert alert-danger'>Unable to save record.</div>";
+                    // bind the parameters
+                    $stmt->bindParam(':username', $username);
+                    $stmt->bindParam(':password', $password);
+                    $stmt->bindParam(':first_name', $first_name);
+                    $stmt->bindParam(':last_name', $last_name);
+                    $stmt->bindParam(':gender', $gender);
+                    $dob = $dob_year . '-' . $dob_month . '-' . $dob_day;
+                    $stmt->bindParam(':dob', $dob);
+                    $stmt->bindParam(':status', $status);
+                    $registration = date('Y-m-d H:i:s'); // get the current date and time
+                    $stmt->bindParam(':registration', $registration);
+
+                    // Execute the query
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was saved.</div>";
+                        $_POST = array();
+                    } else {
+                        echo "<div class='alert alert-danger'>Unable to save record.</div>";
+                    }
                 }
-            }      // show error
+            } // show error
             catch (PDOException $exception) {
                 die('ERROR: ' . $exception->getMessage());
             }
@@ -103,27 +108,31 @@
         <form method="post" action="">
             <div class="mb-3">
                 <label for="username" class="form-label">Username:</label>
-                <input type="text" class="form-control" id="username" name="username" pattern="[a-zA-Z][a-zA-Z0-9_-]{5,}" title="Username must start with a letter, and can only contain letters, numbers, underscore, or hyphen." required>
+                <input type="text" class="form-control" id="username" name="username" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ''; ?>" pattern="[a-zA-Z][a-zA-Z0-9 ]{5,}" title="Username must start with a letter, and cannot have numbers, underscore, or hyphen.">
+
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password:</label>
-                <input type="password" class="form-control" id="password" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$" title="Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number." required>
+                <input type="password" class="form-control" id="password" name="password" value="<?php echo isset($_POST['password']) ? $_POST['password'] : ''; ?>" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$" title="Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.">
+
             </div>
             <div class="mb-3">
                 <label for="confirm-password" class="form-label">Confirm Password:</label>
-                <input type="password" class="form-control" id="confirm-password" name="confirm_password" required>
+                <input type="password" class="form-control" id="confirm-password" name="confirm_password" value="<?php echo isset($_POST['confirm_password']) ? $_POST['confirm_password'] : ''; ?>">
+
             </div>
             <div class="mb-3">
                 <label for="first-name" class="form-label">First Name:</label>
-                <input type="text" class="form-control" id="first-name" name="first_name" required>
+                <input type="text" class="form-control" id="first-name" name="first_name" value="<?php echo isset($_POST['first_name']) ? $_POST['first_name'] : ''; ?>">
+
             </div>
             <div class="mb-3">
                 <label for="last-name" class="form-label">Last Name:</label>
-                <input type="text" class="form-control" id="last-name" name="last_name" required>
+                <input type="text" class="form-control" id="last-name" name="last_name" value="<?php echo isset($_POST['last_name']) ? $_POST['last_name'] : ''; ?>">
             </div>
             <div class="mb-3">
                 <label for="gender" class="form-label">Gender:</label>
-                <select class="form-select" id="gender" name="gender" required>
+                <select class="form-select" id="gender" name="gender" require>
                     <option value="" selected disabled>Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -167,6 +176,15 @@
                         </select>
                     </div>
                 </div>
+            </div>
+            <div class="mb-3">
+                <label for="status" class="form-label">Status:</label>
+                <select class="form-select" id="status" name="status" required>
+                    <option value="" selected disabled>Select Status</option>
+                    <option value="active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="other">Other</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
