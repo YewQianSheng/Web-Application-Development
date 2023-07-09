@@ -14,7 +14,7 @@
         <!-- html form to create product will be here -->
         <!-- PHP insert code will be here -->
         <?php
-        date_default_timezone_set('asia_Kuala_Lumpur');
+        date_default_timezone_set('asia/Kuala_Lumpur');
         if ($_POST) {
             // include database connection
             include 'config/database.php';
