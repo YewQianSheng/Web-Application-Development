@@ -21,6 +21,7 @@
         <!-- html form to create product will be here -->
         <!-- PHP insert code will be here -->
         <?php
+        date_default_timezone_set('asia/Kuala_Lumpur');
         if ($_POST) {
             // include database connection
             include 'config/database.php';
@@ -45,23 +46,16 @@
                 }
 
                 if (empty($price)) {
-                    $error[] = 'Product price is required';
-                } elseif (!is_numeric($_POST['price'])) {
-                    $errors[] = "Product price must be a numeric value.";
-                } else {
-                    $price = $_POST['price'];
+                    $errors[] = "Price is required.";
+                } elseif (!is_numeric($price)) {
+                    $errors[] = "Price must be a numeric value.";
                 }
 
-                if (empty($manufacture) || empty($expired)) {
-                    $error[] = 'Manufacture date and expired date is required.';
-                }
 
                 if (empty($promotion)) {
                     $errors[] = 'promotion is required.';
                 } elseif ($promotion >= $price) {
                     $errors[] = 'Promotion price must be cheaper than original price.';
-                } else {
-                    $promotion = $_POST['promotion'];
                 }
 
 
@@ -69,8 +63,6 @@
                     $errors[] = 'manufacture is required.';
                 } elseif ($expired <= $manufacture) {
                     $errors[] = 'Expired date must be later than manufacture date.';
-                } else {
-                    $manufacture = $_POST['manufacture'];
                 }
 
 
