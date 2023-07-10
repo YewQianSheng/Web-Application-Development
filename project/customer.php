@@ -20,7 +20,7 @@
             include 'config/database.php';
             try {
                 // insert query
-                $query = "INSERT INTO customer SET username=:username, password=:password, first_name=:first_name, last_name=:last_name, gender=:gender, birth=:dob, status=:status , registration_date=:registration";
+                $query = "INSERT INTO customer SET username=:username, password=:password, first_name=:first_name, last_name=:last_name, gender=:gender, birth=:birth, status=:status , registration_date=:registration, email=:email";
                 // prepare query for execution
                 $stmt = $con->prepare($query);
                 $username = $_POST['username'];
@@ -29,10 +29,9 @@
                 $first_name = $_POST['first_name'];
                 $last_name = $_POST['last_name'];
                 $gender = $_POST['gender'];
-                $dob_day = $_POST['dob_day'];
-                $dob_month = $_POST['dob_month'];
-                $dob_year = $_POST['dob_year'];
+                $birth = $_POST['birth'];
                 $status = $_POST['status'];
+                $email = $_POST['email'];
 
 
                 $formattedFirstName = ucwords(strtolower($first_name));
@@ -62,12 +61,19 @@
                     $errors[] = "Gender is required.";
                 }
 
+                if (empty($email)) {
+                    $errors[] = "email is required.";
+                }
+
                 if (empty($dob_day) || empty($dob_month) || empty($dob_year)) {
                     $errors[] = "Date of birth is required.";
                 }
 
                 if (empty($status)) {
                     $errors[] = 'Account status is required.';
+                }
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "Invalid email format.";
                 }
 
                 if (!empty($errors)) {
@@ -88,7 +94,7 @@
                     $stmt->bindParam(':status', $status);
                     $registration = date('Y-m-d H:i:s'); // get the current date and time
                     $stmt->bindParam(':registration', $registration);
-
+                    $stmt->bindParam(':email', $email);
                     // Execute the query
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was saved.</div>";
@@ -99,7 +105,12 @@
                 }
             } // show error
             catch (PDOException $exception) {
-                die('ERROR: ' . $exception->getMessage());
+                //  die('ERROR: ' . $exception->getMessage());
+                if ($exception->getCode() == 23000) {
+                    echo '<div class= "alert alert-danger role=alert">' . 'Username has been taken' . '</div>';
+                } else {
+                    echo '<div class= "alert alert-danger role=alert">' . $exception->getMessage() . '</div>';
+                }
             }
         }
 
@@ -133,56 +144,28 @@
             </div>
             <div class="mb-3">
                 <label for="gender" class="form-label">Gender:</label>
-                <select class="form-select" id="gender" name="gender" require>
-                    <option value="" selected disabled>Select Gender</option>
-                    <option value="male">Male</option>
+                <select class="form-select" id="gender" name="gender">
+                    <option value="male" checked>Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>
                 </select>
             </div>
+
             <div class="mb-3">
-                <label for="dob-day" class="form-label">Date of Birth:</label>
-                <div class="row">
-                    <div class="col">
-                        <select class="form-select" id="dob-day" name="dob_day" required>
-                            <option value="" selected disabled>Select Day</option>
-                            <?php
-                            for ($day = 1; $day <= 31; $day++) {
-                                echo "<option value=\"$day\">$day</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="col">
-                        <select class="form-select" id="dob-month" name="dob_month" required>
-                            <option value="" selected disabled>Select Month</option>
-                            <?php
-                            $months = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-                            foreach ($months as $x => $month) {
-                                $indexmonth = $x + 1;
-                                echo "<option value = '$indexmonth'>$month</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="col">
-                        <select class="form-select" id="dob-year" name="dob_year" required>
-                            <option value="" selected disabled>Select Year</option>
-                            <?php
-                            $currentYear = date("Y");
-                            for ($year = 1900; $year <= $currentYear; $year++) {
-                                echo "<option value=\"$year\">$year</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-                </div>
+                <label for="date" class="form-label">Date of Birth:</label>
+                <input type='date' name='birth' class='form-control' value="<?php echo isset($_POST['birth']) ? $_POST['birth'] : ''; ?>" />
             </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" name="email">
+            </div>
+
             <div class="mb-3">
                 <label for="status" class="form-label">Status:</label>
-                <select class="form-select" id="status" name="status" required>
-                    <option value="" selected disabled>Select Status</option>
-                    <option value="active">Active</option>
+                <select class="form-select" id="status" name="status">
+
+                    <option value="active" checked>Active</option>
                     <option value="Inactive">Inactive</option>
                     <option value="other">Other</option>
                 </select>
