@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
-    <title>Document</title>
 </head>
 
 <body>
@@ -22,6 +21,8 @@
                     <a class="nav-link" href="product_create.php">Create Product</a>
                     <a class="nav-link" href="customer.php">Create Customer</a>
                     <a class="nav-link" href="contact_form.php">Contact Us</a>
+                    <a class="nav-link" href="product_read.php">Read Product</a>
+                    <a class="nav-link" href="customer_read.php">Read Customer</a>
                 </div>
             </div>
         </div>

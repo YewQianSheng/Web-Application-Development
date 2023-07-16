@@ -32,6 +32,7 @@
                 $birth = $_POST['birth'];
                 $status = $_POST['status'];
                 $email = $_POST['email'];
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 
                 $formattedFirstName = ucwords(strtolower($first_name));
@@ -65,7 +66,7 @@
                     $errors[] = "email is required.";
                 }
 
-                if (empty($dob_day) || empty($dob_month) || empty($dob_year)) {
+                if (empty($birth)) {
                     $errors[] = "Date of birth is required.";
                 }
 
@@ -85,12 +86,11 @@
                 } else {
                     // bind the parameters
                     $stmt->bindParam(':username', $username);
-                    $stmt->bindParam(':password', $password);
+                    $stmt->bindParam(':password', $hashed_password);
                     $stmt->bindParam(':first_name', $first_name);
                     $stmt->bindParam(':last_name', $last_name);
                     $stmt->bindParam(':gender', $gender);
-                    $dob = $dob_year . '-' . $dob_month . '-' . $dob_day;
-                    $stmt->bindParam(':dob', $dob);
+                    $stmt->bindParam(':birth', $birth);
                     $stmt->bindParam(':status', $status);
                     $registration = date('Y-m-d H:i:s'); // get the current date and time
                     $stmt->bindParam(':registration', $registration);
@@ -105,7 +105,7 @@
                 }
             } // show error
             catch (PDOException $exception) {
-                //  die('ERROR: ' . $exception->getMessage());
+                // die('ERROR: ' . $exception->getMessage());
                 if ($exception->getCode() == 23000) {
                     echo '<div class= "alert alert-danger role=alert">' . 'Username has been taken' . '</div>';
                 } else {
