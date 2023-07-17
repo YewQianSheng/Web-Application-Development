@@ -22,12 +22,13 @@
         <!-- PHP insert code will be here -->
         <?php
         date_default_timezone_set('asia/Kuala_Lumpur');
+        include 'config/database.php';
         if ($_POST) {
             // include database connection
-            include 'config/database.php';
+
             try {
                 // insert query
-                $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created, promotion_price=:promotion, manufacture_date=:manufacture, expired_date=:expired ";
+                $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created, promotion_price=:promotion, manufacture_date=:manufacture, expired_date=:expired, category_name=:category_name ";
                 // prepare query for execution
                 $stmt = $con->prepare($query);
                 $name = $_POST['name'];
@@ -36,6 +37,7 @@
                 $promotion = $_POST['promotion'];
                 $manufacture = $_POST['manufacture'];
                 $expired = $_POST['expired'];
+                $category_name = $_POST['category_name'];
                 $errors = array();
                 if (empty($name)) {
                     $errors[] = 'Product name is required.';
@@ -84,6 +86,7 @@
                     $stmt->bindParam(':promotion', $promotion);
                     $stmt->bindParam(':manufacture', $manufacture);
                     $stmt->bindParam(':expired', $expired);
+                    $stmt->bindParam(':category_name', $category_name);
                     // Execute the query
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was saved.</div>";
@@ -128,7 +131,23 @@
                     <td>Expired_date</td>
                     <td><input type='date' name='expired' class='form-control' value="<?php echo isset($_POST['expired']) ? $_POST['expired'] : ''; ?>" /></td>
                 </tr>
+                <tr>
+                    <td>Categories Name</td>
+                    <td> <select class="form-select" name="category_name">
+                            <?php
+                            // Fetch categories from the database
+                            $query = "SELECT category_name FROM category";
+                            $stmt = $con->prepare($query);
+                            $stmt->execute();
+                            $category_name = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
+                            // Generate select options
+                            foreach ($category_name as $category_name) {
+                                echo "<option value='$category_name'>$category_name</option>";
+                            }
+                            ?></select>
+                    </td>
+                </tr>
                 <tr>
                     <td></td>
                     <td>

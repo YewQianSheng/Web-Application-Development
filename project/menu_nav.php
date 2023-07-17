@@ -19,7 +19,7 @@
                 <div class="navbar-nav">
                     <a class="nav-link active" aria-current="page" href="index.php">Home</a>
                     <a class="nav-link" href="product_create.php">Create Product</a>
-                    <a class="nav-link" href="customer.php">Create Customer</a>
+                    <a class="nav-link" href="customer_create.php">Create Customer</a>
                     <a class="nav-link" href="contact_form.php">Contact Us</a>
                     <a class="nav-link" href="product_read.php">Read Product</a>
                     <a class="nav-link" href="customer_read.php">Read Customer</a>

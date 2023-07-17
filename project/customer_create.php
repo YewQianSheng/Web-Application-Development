@@ -39,7 +39,7 @@
                 $formattedLastName = ucwords(strtolower($last_name));
                 $formattedgender = ucwords(strtolower($gender));
                 $errors = [];
-                if (!preg_match('/^[a-zA-Z][a-zA-Z0-9 ]{5,}$/', $username)) {
+                if (!preg_match('/^[a-zA-Z][a-zA-Z0-9]{5,}$/', $username)) {
                     $errors[] = "Invalid username format.";
                 }
 
@@ -120,7 +120,7 @@
         <form method="post" action="">
             <div class="mb-3">
                 <label for="username" class="form-label">Username:</label>
-                <input type="text" class="form-control" id="username" name="username" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ''; ?>" pattern="[a-zA-Z][a-zA-Z0-9 ]{5,}" title="Username must start with a letter, and cannot have numbers, underscore, or hyphen.">
+                <input type="text" class="form-control" id="username" name="username" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ''; ?>" pattern="[a-zA-Z][a-zA-Z0-9]{5,}" title="Username must start with a letter, and cannot have numbers, underscore, or hyphen.">
 
             </div>
             <div class="mb-3">
