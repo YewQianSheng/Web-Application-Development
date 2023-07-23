@@ -13,7 +13,7 @@
     <!-- container -->
     <div class="container">
         <?php
-        include 'menu_nav.php';
+        include 'navbar/menu_nav.php';
         ?>
         <div class="page-header">
             <h1>Read Product</h1>

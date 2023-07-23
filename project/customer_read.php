@@ -11,7 +11,7 @@
     <!-- container -->
     <div class="container">
         <?php
-        include 'menu_nav.php';
+        include 'navbar/menu_nav.php';
         ?>
         <form class="d-flex" action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="GET">
             <input class="form-control me-2 mb-2" type="text" name="search" placeholder="Search" aria-label="Search" value="<?php echo isset($_GET['search_keyword']) ? htmlspecialchars($_GET['search_keyword'], ENT_QUOTES) : ''; ?>">

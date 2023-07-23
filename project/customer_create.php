@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <?php
-        include 'menu_nav.php';
+        include 'navbar/menu_nav.php';
         ?>
         <!-- html form to create product will be here -->
         <!-- PHP insert code will be here -->
@@ -39,12 +39,17 @@
                 $formattedLastName = ucwords(strtolower($last_name));
                 $formattedgender = ucwords(strtolower($gender));
                 $errors = [];
-                if (!preg_match('/^[a-zA-Z][a-zA-Z0-9]{5,}$/', $username)) {
-                    $errors[] = "Invalid username format.";
+
+                if (empty($username)) {
+                    $errors[] = "username is required.";
+                } elseif (!preg_match('/^[a-zA-Z][a-zA-Z0-9]{5,}$/', $username)) {
+                    $errors[] = "Username must start with a letter, and cannot have numbers, underscore, or hyphen.";
                 }
 
-                if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/', $password)) {
-                    $errors[] = "Invalid password format.";
+                if (empty($password)) {
+                    $errors[] = "password is required.";
+                } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/', $password)) {
+                    $errors[] = "Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.";
                 }
 
                 if ($password !== $confirm_password) {
@@ -120,12 +125,12 @@
         <form method="post" action="">
             <div class="mb-3">
                 <label for="username" class="form-label">Username:</label>
-                <input type="text" class="form-control" id="username" name="username" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ''; ?>" pattern="[a-zA-Z][a-zA-Z0-9]{5,}" title="Username must start with a letter, and cannot have numbers, underscore, or hyphen.">
+                <input type="text" class="form-control" id="username" name="username" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ''; ?>">
 
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password:</label>
-                <input type="password" class="form-control" id="password" name="password" value="<?php echo isset($_POST['password']) ? $_POST['password'] : ''; ?>" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$" title="Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.">
+                <input type="password" class="form-control" id="password" name="password" value="<?php echo isset($_POST['password']) ? $_POST['password'] : ''; ?>">
 
             </div>
             <div class="mb-3">
