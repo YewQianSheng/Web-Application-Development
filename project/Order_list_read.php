@@ -64,7 +64,7 @@
                 echo "<td>{$first_name} {$last_name}</td>";
                 echo "<td>{$order_date}</td>";
                 echo "<td class='col-2'>";
-                echo "<a href='order_detail_read.php?id={$order_id}' class='btn btn-info m-r-1em text-white mx-2'>Read Order Details</a>";
+                echo "<a href='order_detail_read.php?id={$order_id}' class='btn btn-primary m-r-1em text-white mx-2'>Read Order Details</a>";
                 echo "</td>";
 
                 echo "</tr>";
