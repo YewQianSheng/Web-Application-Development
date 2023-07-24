@@ -83,7 +83,7 @@
       <table class='table table-hover table-responsive table-bordered'>
 
         <span>Select customer</span>
-        <select class="form-select mb-3" name="customer">
+        <select class="form-select mb-3" name="customer" value="">
           <?php
           // Fetch categories from the database
           $query = "SELECT id, username FROM customer";
@@ -106,67 +106,32 @@
           <th>Product</th>
           <th>Quantity</th>
         </tr>
-        <tr>
-          <td><select class="form-select" name="product[]">
-              <?php
-              // Fetch products from the database
-              $query = "SELECT id, name FROM products";
-              $stmt = $con->prepare($query);
-              $stmt->execute();
-              $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-              // Generate select options
-              foreach ($products as $product) {
-                $product_id = $product['id'];
-                $product_name = $product['name'];
-                echo "<option value='$product_id'>$product_name</option>";
-              } ?>
 
-            </select>
-          <td><input class="form-control" type="number" name="quantity[]"></td>
-          </td>
+        <?php for ($i = 0; $i < 3; $i++) { ?>
 
-        </tr>
-        <tr>
-          <td><select class="form-select" name="product[]">
-              <?php
-              // Fetch products from the database
-              $query = "SELECT id, name FROM products";
-              $stmt = $con->prepare($query);
-              $stmt->execute();
-              $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          <tr>
+            <td><select class="form-select" name="product[]">
+                <?php
+                // Fetch products from the database
+                $query = "SELECT id, name FROM products";
+                $stmt = $con->prepare($query);
+                $stmt->execute();
+                $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-              // Generate select options
-              foreach ($products as $product) {
-                $product_id = $product['id'];
-                $product_name = $product['name'];
-                echo "<option value='$product_id'>$product_name</option>";
-              } ?>
-            </select>
-          <td><input class="form-control" type="number" name="quantity[]"></td>
-          </td>
+                // Generate select options
+                foreach ($products as $product) {
+                  $product_id = $product['id'];
+                  $product_name = $product['name'];
+                  echo "<option value='$product_id'>$product_name</option>";
+                } ?>
 
-        </tr>
-        <tr>
-          <td><select class="form-select" name="product[]">
-              <?php
-              // Fetch products from the database
-              $query = "SELECT id, name FROM products";
-              $stmt = $con->prepare($query);
-              $stmt->execute();
-              $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+              </select>
+            <td><input class="form-control" type="number" name="quantity[]"></td>
+            </td>
+          </tr>
+        <?php } ?>
 
-              // Generate select options
-              foreach ($products as $product) {
-                $product_id = $product['id'];
-                $product_name = $product['name'];
-                echo "<option value='$product_id'>$product_name</option>";
-              } ?>
-            </select>
-          <td><input class="form-control" type="number" name="quantity[]"></td>
-          </td>
-
-        </tr>
 
 
 
