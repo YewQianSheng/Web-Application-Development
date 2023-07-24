@@ -30,6 +30,8 @@
         $quantity_array = $_POST['quantity'];
         $product_id = $_POST['product'];
         $customer = $_POST['customer'];
+        $selected_product_count = count($_POST['product']);
+
         if (empty($customer)) {
           $error[] = "You need to select the customer.";
         }
@@ -97,18 +99,23 @@
         <select class="form-select mb-3" name="customer">
           <option value=''>Select a customer</option>;
           <?php
+
           // Fetch categories from the database
           $query = "SELECT id, username FROM customer";
           $stmt = $con->prepare($query);
           $stmt->execute();
           $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+          for ($x = 0; $x < count($customers); $x++) {
+            $customer_selected = isset($_POST["customer"]) && $customers[$x]['id'] == $_POST["customer"] ? "selected" : "";
+            echo "<option value='{$customers[$x]['id']}' $customer_selected>{$customers[$x]['username']}</option>";
+          }
           // Generate select options
-          foreach ($customers as $customer) {
-            $customer_id = $customer['id'];
-            $customer_name = $customer['username'];
-            echo "<option value='$customer_id'>$customer_name</option>";
-          } ?>
+          // foreach ($customers as $customer) {
+          //   $customer_id = $customer['id'];
+          //   $customer_name = $customer['username'];
+          //   echo "<option value='$customer_id'>$customer_name</option>";
+          // } 
+          ?>
         </select>
         <br>
         <tr>
@@ -118,28 +125,42 @@
           <td class="text-center">Action</td>
         </tr>
 
+        <?php
+        $product_keep = (!empty($error)) ? $selected_product_count : 1;
+        for ($x = 0; $x < $product_keep; $x++) {
+        ?>
+          <tr class="pRow">
+            <td class="col-1">
+              <?php echo $x + 1; ?>
+            </td>
+            <td><select class="form-select" name="product[]">
+                <option value=''>Select a product</option>;
 
-        <tr class="pRow">
-          <td class="text-center">1</td>
-          <td><select class="form-select" name="product[]">
-              <option value=''>Select a product</option>;
-              <?php
-              // Fetch products from the database
-              $query = "SELECT id, name FROM products";
-              $stmt = $con->prepare($query);
-              $stmt->execute();
-              $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                <?php
 
-              // Generate select options
-              foreach ($products as $product) {
-                echo "<option value='{$product['id']}'>{$product['name']}</option>";
-              } ?>
-            </select>
 
-          <td><input class="form-control" type="number" name="quantity[]"></td>
-          <td><input href='#' onclick='deleteRow(this)' class='btn d-flex justify-content-center btn-danger mt-1' value="Delete" /></td>
-          </td>
-        </tr>
+
+                // Fetch products from the database
+                $query = "SELECT id, name FROM products";
+                $stmt = $con->prepare($query);
+                $stmt->execute();
+                $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Generate select options
+                for ($i = 0; $i < count($products); $i++) {
+                  $product_selected = isset($_POST["product"]) && $products[$i]['id'] == $_POST["product"][$x] ? "selected" : "";
+                  echo "<option value='{$products[$i]['id']}' $product_selected>{$products[$i]['name']}</option>";
+                }
+                ?>
+              </select>
+
+            <td><input class="form-control" type="number" name="quantity[]" value="<?php echo isset($_POST['quantity']) ? $_POST['quantity'][$x] : 1; ?>"></td>
+            <td><input href='#' onclick='deleteRow(this)' class='btn d-flex justify-content-center btn-danger mt-1' value="Delete" /></td>
+            </td>
+          <?php
+
+        } ?>
+          </tr>
 
 
       </table>
