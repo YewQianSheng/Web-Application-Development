@@ -147,6 +147,7 @@
       <td colspan="4">
         <input type="button" value="Add More Product" class="btn btn-success add_one" />
       </td>
+      <a href='order_list_read.php' class='btn btn-danger'>Back to order list</a>
     </form>
     <script>
       document.addEventListener('click', function(event) {
