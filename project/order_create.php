@@ -109,12 +109,6 @@
             $customer_selected = isset($_POST["customer"]) && $customers[$x]['id'] == $_POST["customer"] ? "selected" : "";
             echo "<option value='{$customers[$x]['id']}' $customer_selected>{$customers[$x]['username']}</option>";
           }
-          // Generate select options
-          // foreach ($customers as $customer) {
-          //   $customer_id = $customer['id'];
-          //   $customer_name = $customer['username'];
-          //   echo "<option value='$customer_id'>$customer_name</option>";
-          // } 
           ?>
         </select>
         <br>
@@ -137,9 +131,6 @@
                 <option value=''>Select a product</option>;
 
                 <?php
-
-
-
                 // Fetch products from the database
                 $query = "SELECT id, name FROM products";
                 $stmt = $con->prepare($query);
@@ -154,7 +145,7 @@
                 ?>
               </select>
 
-            <td><input class="form-control" type="number" name="quantity[]" value="<?php echo isset($_POST['quantity']) ? $_POST['quantity'][$x] : 1; ?>"></td>
+            <td><input class="form-control" type="number" name="quantity[]" value="<?php echo isset($_POST['quantity']) ? $_POST['quantity'][$x] : 0; ?>"></td>
             <td><input href='#' onclick='deleteRow(this)' class='btn d-flex justify-content-center btn-danger mt-1' value="Delete" /></td>
             </td>
           <?php

@@ -76,8 +76,6 @@
                 echo "<td>{$category_name}</td>";
                 echo "<td>{$description}</td>";
                 echo "<td class='text-end'>";
-                // read one record
-                echo "<a href='product_read_one.php?id={$id}' class='btn btn-info me-3'>Read</a>";
 
                 // we will use this links on next part of this post
                 echo "<a href='product_update.php?id={$id}' class='btn btn-primary me-3'>Edit</a>";
