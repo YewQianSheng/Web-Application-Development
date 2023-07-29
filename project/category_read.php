@@ -78,7 +78,7 @@
                 echo "<td class='text-end'>";
 
                 // we will use this links on next part of this post
-                echo "<a href='product_update.php?id={$id}' class='btn btn-primary me-3'>Edit</a>";
+                echo "<a href='category_update.php?id={$id}' class='btn btn-primary me-3'>Edit</a>";
 
                 // we will use this links on next part of this post
                 echo "<a href='#' onclick='delete_product({$id});'  class='btn btn-danger'>Delete</a>";
