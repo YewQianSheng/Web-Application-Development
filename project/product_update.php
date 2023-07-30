@@ -17,14 +17,12 @@
         // get passed parameter value, in this case, the record ID
         // isset() is a PHP function used to verify if a value is there or not
         $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
-
         //include database connection
         include 'config/database.php';
-
         // read current record's data
         try {
             // prepare select query
-            $query = "SELECT id, name, description, price,manufacture_date,expired_date,category_name,promotion_price FROM products WHERE id = ? LIMIT 0,1";
+            $query = "SELECT id, name, description, price,promotion_price,category_name,manufacture_date,expired_date FROM products WHERE id = ? LIMIT 0,1";
             $stmt = $con->prepare($query);
 
             // this is the first question mark
@@ -61,7 +59,7 @@
                 // it is better to label them and not use question marks
                 $query = "UPDATE products
                   SET name=:name, description=:description,
-   price=:price WHERE id = :id";
+   price=:price,promotion_price=:promotion_price,category_name=:category_name,manufacture_date=:manufacture_date,expired_date=:expired_date WHERE id = :id";
                 // prepare query for excecution
                 $stmt = $con->prepare($query);
                 // posted values
@@ -72,20 +70,60 @@
                 $category_name = htmlspecialchars(strip_tags($_POST['category_name']));
                 $manufacture_date = htmlspecialchars(strip_tags($_POST['manufacture_date']));
                 $expired_date = htmlspecialchars(strip_tags($_POST['expired_date']));
+                $errors = array();
+                if (empty($name)) {
+                    $errors[] = 'Product name is required.';
+                }
+
+                if (empty($description)) {
+                    $errors[] = 'Description is required.';
+                }
+
+                if (empty($price)) {
+                    $errors[] = "Price is required.";
+                } elseif (!is_numeric($price)) {
+                    $errors[] = "Price must be a numeric value.";
+                }
+
+
+                if (empty($promotion_price)) {
+                    $errors[] = 'promotion is required.';
+                } elseif ($promotion_price >= $price) {
+                    $errors[] = 'Promotion price must be cheaper than original price.';
+                }
+
+
+                if (empty($manufacture_date)) {
+                    $errors[] = 'manufacture is required.';
+                } elseif ($expired_date <= $manufacture_date) {
+                    $errors[] = 'Expired date must be later than manufacture date.';
+                }
+
+
+                if (!empty($errors)) {
+                    echo "<div class='alert alert-danger m-3'>";
+                    foreach ($errors as $displayError) {
+                        echo $displayError . "<br>";
+                    }
+                    echo "</div>";
+                }
                 // bind the parameters
-                $stmt->bindParam(':name', $name);
-                $stmt->bindParam(':description', $description);
-                $stmt->bindParam(':price', $price);
-                $stmt->bindParam(':promotion_price', $promotion_price);
-                $stmt->bindParam(':category_name', $category_name);
-                $stmt->bindParam(':manufacture_date', $manufacture_date);
-                $stmt->bindParam(':expired_date', $expired_date);
-                $stmt->bindParam(':id', $id);
-                // Execute the query
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Record was updated.</div>";
-                } else {
-                    echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                else {
+                    // bind the parameters
+                    $stmt->bindParam(':name', $name);
+                    $stmt->bindParam(':description', $description);
+                    $stmt->bindParam(':price', $price);
+                    $stmt->bindParam(':promotion_price', $promotion_price);
+                    $stmt->bindParam(':category_name', $category_name);
+                    $stmt->bindParam(':manufacture_date', $manufacture_date);
+                    $stmt->bindParam(':expired_date', $expired_date);
+                    $stmt->bindParam(':id', $id);
+                    // Execute the query
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was updated.</div>";
+                    } else {
+                        echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                    }
                 }
             }
             // show errors
@@ -118,16 +156,28 @@
                     <td><input type='text' name='promotion_price' value="<?php echo htmlspecialchars($promotion_price, ENT_QUOTES);  ?>" class='form-control' /></td>
                 </tr>
                 <tr>
-                    <td>category_name</td>
-                    <td><input type='text' name='category_name' value="<?php echo htmlspecialchars($category_name, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td>Category</td>
+                    <td><select class="form-select" name="category_name">
+                            <?php
+                            // Fetch categories from the database
+                            $query = "SELECT category_name FROM category";
+                            $stmt = $con->prepare($query);
+                            $stmt->execute();
+                            while ($category_row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                $category = $category_row['category_name'];
+
+                                $selected = ($category == $row['category_name']) ? "selected" : "";
+                                echo "<option value='" . $category . "' $selected>" . htmlspecialchars($category) . "</option>";
+                            }
+                            ?></select></td>
                 </tr>
                 <tr>
                     <td>manufacture_date</td>
-                    <td><input type='text' name='manufacture_date' value="<?php echo htmlspecialchars($manufacture_date, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td><input type='date' name='manufacture_date' value="<?php echo htmlspecialchars($manufacture_date, ENT_QUOTES);  ?>" class='form-control' /></td>
                 </tr>
                 <tr>
-                    <td>category_name</td>
-                    <td><input type='text' name='category_name' value="<?php echo htmlspecialchars($category_name, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td>expired_date</td>
+                    <td><input type='date' name='expired_date' value="<?php echo htmlspecialchars($expired_date, ENT_QUOTES);  ?>" class='form-control' /></td>
                 </tr>
 
                 <tr>
