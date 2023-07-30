@@ -34,10 +34,6 @@
                 $email = $_POST['email'];
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-
-                $formattedFirstName = ucwords(strtolower($first_name));
-                $formattedLastName = ucwords(strtolower($last_name));
-                $formattedgender = ucwords(strtolower($gender));
                 $errors = [];
 
                 if (empty($username)) {
@@ -150,9 +146,8 @@
             <div class="mb-3">
                 <label for="gender" class="form-label">Gender:</label>
                 <select class="form-select" id="gender" name="gender">
-                    <option value="male" checked>Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="Male" checked>Male</option>
+                    <option value="Female">Female</option>
                 </select>
             </div>
 
