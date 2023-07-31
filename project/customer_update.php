@@ -28,7 +28,6 @@
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
             $username = $row['username'];
             $password = $row['password'];
             $first_name = $row['first_name'];
@@ -46,8 +45,8 @@
         if ($_POST) {
             try {
                 $query = "UPDATE customer
-                SET username=:username, password=:password, first_name=:first_name, last_name=:last_name, gender=:gender, birth=:birth, email=:email,
-               status=:status WHERE id = :id";
+                SET username=:username, first_name=:first_name, last_name=:last_name, gender=:gender, birth=:birth, email=:email,
+               status=:status";
                 // prepare query for excecution
                 $stmt = $con->prepare($query);
                 // posted values
@@ -57,26 +56,29 @@
                 $confirm_password = $_POST['confirm_password'];
                 $first_name = htmlspecialchars(strip_tags($_POST['first_name']));
                 $last_name = htmlspecialchars(strip_tags($_POST['last_name']));
-                $gender = htmlspecialchars(strip_tags($_POST['gender']));
-                $birth = htmlspecialchars(strip_tags($_POST['birth']));
+                $gender = $_POST['gender'];
+                $birth = $_POST['birth'];
                 $email = htmlspecialchars(strip_tags($_POST['email']));
-                $status = htmlspecialchars(strip_tags($_POST['status']));
+                $status = $_POST['status'];
 
                 $error = array();
-                if (!empty($_POST['old_password'])) {
-                    if (password_verify($old_password, $row['password'])) {
-                        if ($new_password == $old_password) {
-                            $error[] = "The new password can not same with old password.";
-                        } else if ($new_password == $confirm_password) {
-                            $formatted_password = password_hash($new_password, PASSWORD_DEFAULT);
-                        } else {
-                            $error[] = "The new password does not match with confirm password.";
-                        }
-                    } else {
-                        $error[] = "You are type wrong password for old password";
+                if (!empty($old_password) && !empty($new_password) && !empty($confirm_password)) {
+                    if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/', $password)) {
+                        $errors[] = "Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.";
                     }
-                } else {
-                    $formatted_password = $password;
+                    if ($new_password == $confirm_password) {
+                    } else {
+                        $error[] = "The confirm password doesn't match with new password.";
+                    }
+                    if (password_verify($old_password = $password, $password)) {
+                    } else {
+                        $error[] = "Wrong password entered in old password column";
+                    }
+                    if ($old_password == $new_password) {
+                        $error[] = "New Password can't be same with Old Password";
+                    } else {
+                        $formatted_password = $new_password;
+                    }
                 }
 
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -90,15 +92,24 @@
                     }
                     echo "</div>";
                 } else {
+                    if (isset($formatted_password)) {
+                        $query .= ", password=:password";
+                    }
+
+                    $query .= " WHERE id = :id";
+                    $stmt = $con->prepare($query);
                     $stmt->bindParam(":id", $id);
                     $stmt->bindParam(':username', $username);
-                    $stmt->bindParam(':password', $formatted_password);
                     $stmt->bindParam(':first_name', $first_name);
                     $stmt->bindParam(':last_name', $last_name);
                     $stmt->bindParam(':gender', $gender);
                     $stmt->bindParam(':birth', $birth);
                     $stmt->bindParam(':email', $email);
                     $stmt->bindParam(':status', $status);
+                    if (isset($formatted_password)) {
+                        $stmt->bindParam(':password', $formatted_password);
+                    }
+
                     // Execute the query
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was updated.</div>";
