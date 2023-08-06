@@ -32,7 +32,7 @@
         $quantity_array = $_POST['quantity'];
         $product_id = $_POST['product'];
         $customer = $_POST['customer'];
-        $selected_product_count = count($_POST['product']);
+        // $selected_product_count = count($_POST['product']);
         $noduplicate = array_unique($product_id);
 
         if (sizeof($noduplicate) != sizeof($product_id)) {
@@ -51,20 +51,21 @@
           $error[] = "You need to select the customer.";
         }
 
-        foreach ($product_id as $product) {
-          if (empty($product)) {
-            $error[] = "You need to select the product.";
+        if (isset($selected_product_count)) {
+          for ($i = 0; $i < $selected_product_count; $i++) {
+            if ($product_id[$i] == "") {
+              $error[] = " Please choose the product for NO " . $i + 1 . ".";
+            }
+
+            if ($quantity_array[$i] == 0 || empty($quantity_array[$i])) {
+              $error[] = "Quantity Can not be zero or empty.";
+            } else if ($quantity_array[$i] < 0) {
+              $error[] = "Quantity Can not be negative number.";
+            }
           }
         }
 
-        foreach ($quantity_array as $quantity) {
-          if (empty($quantity)) {
-            $error[] = "Please fill in the quantity for all products.";
-          }
-          if ($quantity == 0) {
-            $error[] = "Quantity cannot be zero.";
-          }
-        }
+
 
         if (!empty($error)) {
           echo "<div class='alert alert-danger role='alert'>";
@@ -160,7 +161,7 @@
                 ?>
               </select>
 
-            <td><input type="number" class="form-control" name="quantity[]" id="quantity" value="<?php echo isset($_POST['quantity']) ? $quantity[$x] : 0; ?>"></td>
+            <td><input type="number" class="form-control" name="quantity[]" id="quantity" value="<?php echo isset($_POST['quantity']) ? $quantity_array[$x] : 0; ?>"></td>
             <td><input href='#' onclick='deleteRow(this)' class='btn d-flex justify-content-center btn-danger mt-1' value="Delete" /></td>
             </td>
           <?php

@@ -63,23 +63,28 @@
 
                 $error = array();
                 if (!empty($old_password) && !empty($new_password) && !empty($confirm_password)) {
-                    if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/', $password)) {
-                        $errors[] = "Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.";
-                    }
-                    if ($new_password == $confirm_password) {
+                    // Password format validation
+                    if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*[-+$()%@#]).{6,}$/', $new_password)) {
+                        $errors[] = 'Invalid new password format.';
                     } else {
-                        $error[] = "The confirm password doesn't match with new password.";
+                        if ($new_password == $confirm_password) {
+                            if (password_verify($old_password, $password)) {
+                                if ($old_password == $new_password) {
+                                    $errors[] = "New password can't be the same as the old password.";
+                                } else {
+                                    $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+                                }
+                            } else {
+                                $errors[] = "Wrong password entered in the old password column.";
+                            }
+                        } else {
+                            $errors[] = "The confirm password doesn't match the new password.";
+                        }
                     }
-                    if (password_verify($old_password = $password, $password)) {
-                    } else {
-                        $error[] = "Wrong password entered in old password column";
-                    }
-                    if ($old_password == $new_password) {
-                        $error[] = "New Password can't be same with Old Password";
-                    } else {
-                        $formatted_password = $new_password;
-                    }
+                } else {
+                    $hashed_password = $password;
                 }
+
 
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $error[] = "Invalid Email format.";
@@ -92,13 +97,17 @@
                     }
                     echo "</div>";
                 } else {
-                    if (isset($formatted_password)) {
+                    if (isset($hashed_password)) {
                         $query .= ", password=:password";
                     }
-
-                    $query .= " WHERE id = :id";
+                    $query .= " WHERE id=:id";
                     $stmt = $con->prepare($query);
-                    $stmt->bindParam(":id", $id);
+                    // bind the parameters
+                    $stmt->bindParam(':id', $id);
+                    $stmt->bindParam(':username', $username);
+                    if (isset($hashed_password)) {
+                        $stmt->bindParam(':password', $hashed_password);
+                    }
                     $stmt->bindParam(':username', $username);
                     $stmt->bindParam(':first_name', $first_name);
                     $stmt->bindParam(':last_name', $last_name);
@@ -106,10 +115,6 @@
                     $stmt->bindParam(':birth', $birth);
                     $stmt->bindParam(':email', $email);
                     $stmt->bindParam(':status', $status);
-                    if (isset($formatted_password)) {
-                        $stmt->bindParam(':password', $formatted_password);
-                    }
-
                     // Execute the query
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was updated.</div>";

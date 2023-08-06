@@ -35,7 +35,7 @@
         $num = $stmt->rowCount();
 
         echo '<div class="p-3 pt-2">
-            <a href="new_order.php" class="btn btn-primary m-b-1em">Create New Order</a>
+            <a href="order_create.php" class="btn btn-primary m-b-1em">Create New Order</a>
         </div>';
 
         echo '<div class="p-3">
@@ -63,8 +63,9 @@
                 echo "<td>{$order_id}</td>";
                 echo "<td>{$first_name} {$last_name}</td>";
                 echo "<td>{$order_date}</td>";
-                echo "<td class='col-2'>";
+                echo "<td class='col-3'>";
                 echo "<a href='order_detail_read.php?id={$order_id}' class='btn btn-primary m-r-1em text-white mx-2'>Read Order Details</a>";
+                echo "<a href='order_update.php?order_id={$order_id}' class='btn btn-primary m-r-1em mx-2'>Edit</a>";
                 echo "</td>";
 
                 echo "</tr>";
