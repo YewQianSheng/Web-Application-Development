@@ -54,8 +54,7 @@
                 foreach ($product_id as $key => $val) {
                     if (!array_key_exists($key, $noduplicate)) {
                         $error[] = "Duplicated products have been chosen ";
-                        array_splice($product_id, $key, 1);
-                        array_splice($quantity_array, $key, 1);
+                        unset($quantity[$key]);
                     }
                 }
             }
