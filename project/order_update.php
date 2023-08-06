@@ -49,6 +49,7 @@
         if ($_POST) {
             $product_id = $_POST["product"];
             $quantity = $_POST["quantity"];
+            $noduplicate = array_unique($product_id);
             if (sizeof($noduplicate) != sizeof($product_id)) {
                 foreach ($product_id as $key => $val) {
                     if (!array_key_exists($key, $noduplicate)) {
@@ -61,8 +62,6 @@
             $product_id = array_values($noduplicate);
             $quantity = array_values($quantity);
 
-            print_r($product_id);
-            print_r($quantity);
             $selected_product_count = isset($noduplicate) ? count($noduplicate) : count($order_details);
 
             try {
@@ -72,9 +71,9 @@
                             $error[] = " Please choose the product for NO " . $i + 1 . ".";
                         }
 
-                        if ($quantity_array[$i] == 0 || empty($quantity_array[$i])) {
+                        if ($quantity[$i] == 0 || empty($quantity[$i])) {
                             $error[] = "Quantity Can not be zero or empty.";
-                        } else if ($quantity_array[$i] < 0) {
+                        } else if ($quantity[$i] < 0) {
                             $error[] = "Quantity Can not be negative number.";
                         }
                     }
@@ -129,7 +128,7 @@
                 </tr>
 
                 <?php
-                $product_keep = (!empty($error)) ? $selected_product_count : 1;
+                $product_keep = empty($error) ? count($order_details) : count($noduplicate);
                 for ($x = 0; $x < $product_keep; $x++) {
                 ?>
                     <tr class="pRow">
