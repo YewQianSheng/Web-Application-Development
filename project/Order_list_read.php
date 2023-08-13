@@ -19,7 +19,12 @@
 
         <?php
         include 'config/database.php';
+        $action = isset($_GET['action']) ? $_GET['action'] : "";
 
+        // if it was redirected from delete.php
+        if ($action == 'deleted') {
+            echo "<div class='alert alert-success'>Record was deleted.</div>";
+        }
         $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
         $query = "SELECT order_summary.order_id, customer.first_name, customer.last_name, order_summary.order_date FROM order_summary INNER JOIN customer ON order_summary.customer_id = customer.id";
         if (!empty($searchKeyword)) {
@@ -64,9 +69,10 @@
                 echo "<td>{$order_id}</td>";
                 echo "<td>{$first_name} {$last_name}</td>";
                 echo "<td>{$order_date}</td>";
-                echo "<td class='col-3'>";
+                echo "<td class='col-4'>";
                 echo "<a href='order_detail_read.php?id={$order_id}' class='btn btn-primary m-r-1em text-white mx-2'>Read Order Details</a>";
                 echo "<a href='order_update.php?order_id={$order_id}' class='btn btn-primary m-r-1em mx-2'>Edit</a>";
+                echo "<a href='#' onclick='delete_product({$order_id});'  class='btn btn-primary m-r-1em mx-2'>Delete</a>";
                 echo "</td>";
 
                 echo "</tr>";
@@ -80,6 +86,17 @@
         }
         ?>
     </div>
+    <script type='text/javascript'>
+        // confirm record deletion
+        function delete_product(id) {
+            if (confirm('Are you sure?')) {
+                // if user clicked ok,
+                // pass the id to delete.php and execute the delete query
+                window.location = 'order_delete.php?id=' + id;
+            }
+        }
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </body>
 

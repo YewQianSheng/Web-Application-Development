@@ -27,6 +27,12 @@
         <?php
         // include database connection
         include 'config/database.php';
+        $action = isset($_GET['action']) ? $_GET['action'] : "";
+
+        // if it was redirected from delete.php
+        if ($action == 'deleted') {
+            echo "<div class='alert alert-success'>Record was deleted.</div>";
+        }
         $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
         $query = "SELECT id, username, first_name, last_name, email, status FROM customer";
         if (!empty($searchKeyword)) {
@@ -103,7 +109,17 @@
 
 
     </div> <!-- end .container -->
+    <script type='text/javascript'>
+        // confirm record deletion
+        function delete_product(id) {
 
+            if (confirm('Are you sure?')) {
+                // if user clicked ok,
+                // pass the id to delete.php and execute the delete query
+                window.location = 'customer_delete.php?id=' + id;
+            }
+        }
+    </script>
     <!-- confirm delete record will be here -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </body>
