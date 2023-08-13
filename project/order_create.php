@@ -1,3 +1,4 @@
+<?php include "session.php" ?>
 <!DOCTYPE HTML>
 <html>
 
@@ -32,8 +33,9 @@
         $quantity_array = $_POST['quantity'];
         $product_id = $_POST['product'];
         $customer = $_POST['customer'];
+        //array 里面有一样的东西就会删除
         $noduplicate = array_unique($product_id);
-
+        //check有多少个东西
         if (sizeof($noduplicate) != sizeof($product_id)) {
           foreach ($product_id as $key => $val) {
             if (!array_key_exists($key, $noduplicate)) {

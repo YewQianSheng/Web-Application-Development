@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (isset($_SESSION["customer_id"])) {
+    header('Location: index.php');
+    exit();
+}
+?>
+
 <!DOCTYPE HTML>
 <html>
 
@@ -48,6 +56,7 @@
 
                         if (password_verify($password_enter, $row['password'])) {
                             if ($row['status'] == 'Active') {
+                                $_SESSION['customer_id'] = $row['id'];
                                 header("Location: index.php");
                                 exit();
                             } else {

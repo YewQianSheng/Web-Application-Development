@@ -1,3 +1,10 @@
+<?php
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: login_page.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,6 +72,14 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="contact_form.php">Contact</a>
                     </li>
+
+                    <li class="nav-item text-end">
+                        <a class="nav-link" href="?logout=true">Logout</a>
+
+                    </li>
+
+
+
 
                 </ul>
             </div>
