@@ -18,13 +18,16 @@
     <div class="page-header">
       <h1>New Order</h1>
     </div>
-
     <!-- html form to create product will be here -->
     <!-- PHP insert code will be here -->
     <?php
     date_default_timezone_set('asia/Kuala_Lumpur');
     // include database connection
     include 'config/database.php';
+    $query = "SELECT * FROM products";
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if ($_POST) {
 
       try {
@@ -33,6 +36,9 @@
         $quantity_array = $_POST['quantity'];
         $product_id = $_POST['product'];
         $customer = $_POST['customer'];
+        $total_amount = 0;
+
+
         //array 里面有一样的东西就会删除
         $noduplicate = array_unique($product_id);
         //check有多少个东西
@@ -75,11 +81,16 @@
           }
           echo "</div>";
         } else {
+          for ($x = 0; $x < $selected_product_count; $x++) {
+            $amount =  ($products[$product_id[$x] - 1]['promotion_price'] != 0) ?  $products[$product_id[$x] - 1]['promotion_price'] * $quantity_array[$x] : $products[$product_id[$x] - 1]['price'] * $quantity_array[$x];
 
+            $total_amount += $amount;
+          }
           $order_date = date('Y-m-d H:i:s'); // get the current date and time
-          $summary_query = "INSERT INTO order_summary SET customer_id=:customer, order_date=:order_date";
+          $summary_query = "INSERT INTO order_summary SET customer_id=:customer, total_amount=:total_amount, order_date=:order_date";
           $summary_stmt = $con->prepare($summary_query);
           $summary_stmt->bindParam(':customer', $customer);
+          $summary_stmt->bindParam(":total_amount", $total_amount);
           $summary_stmt->bindParam(':order_date', $order_date);
           $summary_stmt->execute();
 
@@ -148,10 +159,7 @@
 
                 <?php
                 // Fetch products from the database
-                $query = "SELECT id, name FROM products";
-                $stmt = $con->prepare($query);
-                $stmt->execute();
-                $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
                 // Generate select options
                 for ($i = 0; $i < count($products); $i++) {
