@@ -23,7 +23,7 @@
         </form>
 
         <div class="page-header">
-            <h1>Read Products</h1>
+            <h1>Read Category</h1>
         </div>
 
         <!-- PHP code to read records will be here -->
@@ -35,6 +35,10 @@
         // if it was redirected from delete.php
         if ($action == 'deleted') {
             echo "<div class='alert alert-success'>Record was deleted.</div>";
+        }
+
+        if ($action == 'failed') {
+            echo "<div class='alert alert-danger'>There are products inside this Category.</div>";
         }
         // delete message prompt will be here
         $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
@@ -68,6 +72,7 @@
             echo "<th>ID</th>";
             echo "<th>Name</th>";
             echo "<th>Description</th>";
+            echo "<th>Action</th>";
             echo "</tr>";
 
             // table body will be here

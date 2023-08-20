@@ -72,7 +72,7 @@
                 echo "<td class='col-4'>";
                 echo "<a href='order_detail_read.php?id={$order_id}' class='btn btn-primary m-r-1em text-white mx-2'>Read Order Details</a>";
                 echo "<a href='order_update.php?order_id={$order_id}' class='btn btn-primary m-r-1em mx-2'>Edit</a>";
-                echo "<a href='#' onclick='delete_product({$order_id});'  class='btn btn-primary m-r-1em mx-2'>Delete</a>";
+                echo "<a href='#' onclick='delete_order({$order_id});'  class='btn btn-primary m-r-1em mx-2'>Delete</a>";
                 echo "</td>";
 
                 echo "</tr>";
@@ -88,7 +88,7 @@
     </div>
     <script type='text/javascript'>
         // confirm record deletion
-        function delete_product(id) {
+        function delete_order(id) {
             if (confirm('Are you sure?')) {
                 // if user clicked ok,
                 // pass the id to delete.php and execute the delete query

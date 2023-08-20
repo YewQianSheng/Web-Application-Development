@@ -37,6 +37,10 @@
         if ($action == 'deleted') {
             echo "<div class='alert alert-success'>Record was deleted.</div>";
         }
+
+        if ($action == 'failed') {
+            echo "<div class='alert alert-danger'>The Product has been ordered.</div>";
+        }
         // delete message prompt will be here
         $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
         $query = "SELECT id, name, description, price,promotion_price,category_name FROM products";

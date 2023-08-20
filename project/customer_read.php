@@ -27,11 +27,16 @@
         <?php
         // include database connection
         include 'config/database.php';
+
         $action = isset($_GET['action']) ? $_GET['action'] : "";
 
         // if it was redirected from delete.php
         if ($action == 'deleted') {
             echo "<div class='alert alert-success'>Record was deleted.</div>";
+        }
+
+        if ($action == 'failed') {
+            echo "<div class='alert alert-danger'>This customer make a order.</div>";
         }
         $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
         $query = "SELECT id, username, first_name, last_name, email, status FROM customer";
@@ -93,7 +98,7 @@
                 echo "<a href='customer_update.php?id={$id}' class='btn btn-primary me-3'>Edit</a>";
 
                 // we will use this links on next part of this post
-                echo "<a href='#' onclick='delete_product({$id});'  class='btn btn-danger'>Delete</a>";
+                echo "<a href='#' onclick='delete_customer({$id});'  class='btn btn-danger mx-1'>Delete</a>";
                 echo "</td>";
                 echo "</tr>";
             }
@@ -111,7 +116,7 @@
     </div> <!-- end .container -->
     <script type='text/javascript'>
         // confirm record deletion
-        function delete_product(id) {
+        function delete_customer(id) {
 
             if (confirm('Are you sure?')) {
                 // if user clicked ok,
