@@ -32,7 +32,7 @@
         // read current record's data
         try {
             // prepare select query
-            $query = "SELECT id, name, description, price,promotion_price, manufacture_date,expired_date,category_name FROM products WHERE id = :id ";
+            $query = "SELECT id, name, description, price,promotion_price, manufacture_date,expired_date,category_name,image FROM products WHERE id = :id ";
             $stmt = $con->prepare($query);
 
             // Bind the parameter
@@ -52,6 +52,7 @@
             $category_name = $row['category_name'];
             $manufacture_date = $row['manufacture_date'];
             $expired_date = $row['expired_date'];
+            $image = $row['image'];
             // shorter way to do that is extract($row)
         }
 
@@ -59,6 +60,7 @@
         catch (PDOException $exception) {
             die('ERROR: ' . $exception->getMessage());
         }
+
         ?>
 
         <!-- HTML read one record table will be here -->
@@ -91,6 +93,18 @@
             <tr>
                 <td>Expired Date</td>
                 <td><?php echo htmlspecialchars($expired_date, ENT_QUOTES);  ?></td>
+            </tr>
+            <tr>
+                <td>Image</td>
+                <td>
+                    <?php
+                    if ($image == "") {
+                        echo '<img src="image/CS_image.jpg">';
+                    } else {
+                        echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '">';
+                    }
+                    ?>
+                </td>
             </tr>
             <tr>
                 <td></td>

@@ -13,7 +13,7 @@ try {
     $products = $product_exist_stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // delete query
-    $query = "DELETE FROM products WHERE id = ?";
+    $query = "DELETE FROM category WHERE id = ?";
     $stmt = $con->prepare($query);
     $stmt->bindParam(1, $id);
     for ($i = 0; $i < count($products); $i++) {

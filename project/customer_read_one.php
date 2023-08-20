@@ -31,7 +31,7 @@
         // read current record's data
         try {
             // prepare select query
-            $query = "SELECT id, username, first_name, last_name, gender, birth, registration_date,status,email FROM customer WHERE id = :id ";
+            $query = "SELECT id, username, first_name, last_name, gender, birth, registration_date,status,email,image FROM customer WHERE id = :id ";
             $stmt = $con->prepare($query);
 
             // Bind the parameter
@@ -52,6 +52,7 @@
             $registration_date_time = $row['registration_date'];
             $account_status = $row['status'];
             $email = $row['email'];
+            $image = $row['image'];
             // shorter way to do that is extract($row)
         }
 
@@ -96,6 +97,18 @@
             <tr>
                 <td>Account Status</td>
                 <td><?php echo htmlspecialchars($account_status, ENT_QUOTES);  ?></td>
+            </tr>
+            <tr>
+                <td>Image</td>
+                <td>
+                    <?php
+                    if ($image == "") {
+                        echo '<img src="image/customer_img.jpg">';
+                    } else {
+                        echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '">';
+                    }
+                    ?>
+                </td>
             </tr>
             <tr>
                 <td></td>
