@@ -24,7 +24,7 @@ try {
     $query = "DELETE FROM customer WHERE id = ?";
     $stmt = $con->prepare($query);
     $stmt->bindParam(1, $id);
-    if (isset($error)) {
+    if ($customers > 0) {
         header("Location: customer_read.php?action=failed");
     } else if ($stmt->execute()) {
         unlink("uploads/" . $image['image']);

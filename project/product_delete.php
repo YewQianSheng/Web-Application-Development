@@ -22,7 +22,7 @@ try {
     $query = "DELETE FROM products WHERE id = ?";
     $stmt = $con->prepare($query);
     $stmt->bindParam(1, $id);
-    if (isset($error)) {
+    if ($products > 0) {
         header("Location: product_read.php?action=failed");
     } else if ($stmt->execute()) {
         unlink("uploads/" . $image['image']);
