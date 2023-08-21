@@ -7,8 +7,9 @@ try {
     $id = isset($_GET['id']) ? $_GET['id'] :  die('ERROR: Record ID not found.');
 
 
-    $customer_exist_query = "SELECT id FROM customer WHERE EXISTS (SELECT customer_id FROM order_summary WHERE order_summary.customer_id = customer.id)";
+    $customer_exist_query = "SELECT COUNT(*) FROM order_summary WHERE customer_id = ?";
     $customer_exist_stmt = $con->prepare($customer_exist_query);
+    $customer_exist_stmt->bindParam(1, $id);
     $customer_exist_stmt->execute();
     $customers = $customer_exist_stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -23,10 +24,6 @@ try {
     $query = "DELETE FROM customer WHERE id = ?";
     $stmt = $con->prepare($query);
     $stmt->bindParam(1, $id);
-    for ($i = 0; $i < count($customers); $i++) {
-        if ($id == $customers[$i]['id'])
-            $error = 1;
-    }
     if (isset($error)) {
         header("Location: customer_read.php?action=failed");
     } else if ($stmt->execute()) {
