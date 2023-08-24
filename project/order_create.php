@@ -115,7 +115,9 @@
             $details_stmt->bindParam(':quantity', $quantity[$i]);
             $details_stmt->execute();
           }
-          echo "<div class='alert alert-success'>Order successfully.</div>";
+          echo "<script>
+          window.location.href = 'order_detail_read.php?id={$order_id}&action=create_order_successfully';
+        </script>";
         }
       } catch (PDOException $exception) {
         echo '<div class="alert alert-danger role=alert">' . $exception->getMessage() . '</div>';

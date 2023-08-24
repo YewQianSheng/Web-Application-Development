@@ -88,6 +88,11 @@
                         $file_upload_error_messages = "";
                         // make sure that file is a real image
                         $check = getimagesize($_FILES["image"]["tmp_name"]);
+                        $image_width = $check[0];
+                        $image_height = $check[1];
+                        if ($image_width !== $image_height) {
+                            $file_upload_error_messages .= "<div>Only square images are allowed.</div>";
+                        }
                         if ($check !== false) {
                             // submitted file is an image
                         } else {
@@ -106,6 +111,7 @@
                         if ($_FILES['image']['size'] > (1024000)) {
                             $file_upload_error_messages .= "<div>Image must be less than 1 MB in size.</div>";
                         }
+
                         // make sure the 'uploads' folder exists
                         // if not, create it
                         if (!is_dir($target_directory)) {
@@ -132,28 +138,29 @@
                             echo "<div>Update the record to upload photo.</div>";
                             echo "</div>";
                         }
-                    }
-                    // bind the parameters
-                    $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created, promotion_price=:promotion, manufacture_date=:manufacture, expired_date=:expired, category_name=:category_name, image=:image";
-                    // prepare query for execution
-                    $stmt = $con->prepare($query);
-                    $stmt->bindParam(':name', $name);
-                    $stmt->bindParam(':description', $description);
-                    $stmt->bindParam(':price', $price);
-                    $created = date('Y-m-d H:i:s'); // get the current date and time
-                    $stmt->bindParam(':created', $created);
-                    $stmt->bindParam(':promotion', $promotion);
-                    $stmt->bindParam(':manufacture', $manufacture);
-                    $stmt->bindParam(':expired', $expired);
-                    $stmt->bindParam(':category_name', $category_name);
-                    $stmt->bindParam(':image', $image);
-                    // Execute the query
-                    if ($stmt->execute()) {
-                        echo "<div class='alert alert-success'>Record was saved.</div>";
-                        // now, if image is not empty, try to upload the image
-                        $_POST = array();
                     } else {
-                        echo "<div class='alert alert-danger'>Unable to save record.</div>";
+                        // bind the parameters
+                        $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created, promotion_price=:promotion, manufacture_date=:manufacture, expired_date=:expired, category_name=:category_name, image=:image";
+                        // prepare query for execution
+                        $stmt = $con->prepare($query);
+                        $stmt->bindParam(':name', $name);
+                        $stmt->bindParam(':description', $description);
+                        $stmt->bindParam(':price', $price);
+                        $created = date('Y-m-d H:i:s'); // get the current date and time
+                        $stmt->bindParam(':created', $created);
+                        $stmt->bindParam(':promotion', $promotion);
+                        $stmt->bindParam(':manufacture', $manufacture);
+                        $stmt->bindParam(':expired', $expired);
+                        $stmt->bindParam(':category_name', $category_name);
+                        $stmt->bindParam(':image', $image);
+                        // Execute the query
+                        if ($stmt->execute()) {
+                            echo "<div class='alert alert-success'>Record was saved.</div>";
+                            // now, if image is not empty, try to upload the image
+                            $_POST = array();
+                        } else {
+                            echo "<div class='alert alert-danger'>Unable to save record.</div>";
+                        }
                     }
                 }
             }    // show error
@@ -211,7 +218,7 @@
                 </tr>
                 <tr>
                     <td>Photo</td>
-                    <td><input type="file" name="image" /></td>
+                    <td><input type="file" class='form-control' name="image" /></td>
                 </tr>
                 <tr>
                     <td></td>

@@ -248,7 +248,16 @@
                 </tr>
                 <tr>
                     <td>Account Status</td>
-                    <td><input type='text' name='status' value="<?php echo htmlspecialchars($status, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td>
+                        <input type="radio" name="status" id="active" value="Active" <?php if ($row['status'] == "Active") {
+                                                                                            echo 'checked';
+                                                                                        } ?>>
+                        <label class="form-check-label" for="active">Active</label>
+                        <input type="radio" name="status" id="inactive" value="Inactive" <?php if ($row['status'] == "Inactive") {
+                                                                                                echo 'checked';
+                                                                                            } ?>>
+                        <label class="form-check-label" for="inactive">Inactive</label>
+                    </td>
                 </tr>
                 <tr>
                     <td>Photo</td>
