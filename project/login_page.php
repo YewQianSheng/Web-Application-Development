@@ -13,12 +13,20 @@ if (isset($_SESSION["customer_id"])) {
     <title>PDO - Create a Record - PHP CRUD Tutorial</title>
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-
+    <style>
+        body {
+            background-image: url(image/M_backgroud.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+    </style>
 </head>
 
 <body>
     <!-- container -->
-    <div class="container pb-5">
+    <div class="container pb-5 pt-5">
         <div class="page-header p-2">
             <h1>Log In</h1>
         </div>
@@ -91,27 +99,32 @@ if (isset($_SESSION["customer_id"])) {
 
         ?>
 
+        <div class="container bg-warning d-flex w-75 mt-5 p-4">
+            <div class="container p-3  ">
+                <img class="w-100" src="image/HSM.png" alt="EcoMart">
+            </div>
 
-        <div class="container border border-5 p-3">
-            <form action="" method="post">
-                <div class="my-3">
-                    <label for="username_input">Username/Email</label>
-                    <input type="text" name="username_input" id="username_input" class="form-control">
+            <div class="container p-3">
+                <form action="" method="post">
+                    <h1>Welcome to supermart</h1>
+                    <div class="my-3">
+                        <label for="username_input">Username/Email</label>
+                        <input type="text" name="username_input" id="username_input" class="form-control">
+                        <span class="text-danger">
+                    </div>
+                    <div class="my-3 ">
+                        <label for="password_input">Password</label>
+                        <input type="password" name="password_input" id="password_input" class="form-control">
+                        <span class="text-danger">
+                    </div>
+                    <div class="text-center">
+                        <button class='btn btn-primary m-r-1em fs-5 px-5' name="submit" type="submit">Login</button>
+                    </div>
                     <span class="text-danger">
-                </div>
-                <div class="my-3">
-                    <label for="password_input">Password</label>
-                    <input type="password" name="password_input" id="password_input" class="form-control">
-                    <span class="text-danger">
-                </div>
-                <div class="text-center">
-                    <button class='btn btn-primary m-r-1em fs-5 px-5' name="submit" type="submit">Login</button>
-                </div>
-                <span class="text-danger">
-            </form>
+                </form>
+            </div>
+
         </div>
-
-
 
 
         <!-- PHP code to read records will be here -->

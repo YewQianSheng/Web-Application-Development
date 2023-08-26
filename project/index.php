@@ -38,34 +38,32 @@
         $order_details = $order_detail_stmt->fetchAll(PDO::FETCH_ASSOC);
         ?>
 
-        <div class="welcome py-5 text-left">
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <h1 class="display-4">Welcome to Company Name</h1>
-                    <p class="lead">We provide innovative solutions for your business.</p>
-                    <a href="#contact" class="btn btn-primary btn-lg">Get in touch</a>
-                </div>
+        <div class="row">
+            <img src="image/backgrounds.jpg" alt="logo">
+            <div class="position-absolute bottom-50 ms-5 text-black w-50">
+                <h1 class="display-4 text-start fs-1">Welcome to Happy Supper Mart</h1>
+                <p class="lead">A lot of different daily necessities are offered here Please enjoy shopping.</p>
             </div>
         </div>
 
-        <div class="row justify-content-center m-auto ">
-            <div class="col border border-3 shadow-lg p-2 text-center bg-secondary-subtle">
+        <div class="row justify-content-center m-auto bg-warning-subtle">
+            <div class="col border p-2 text-center">
                 <h2 class="fs-4">Total Number of Customers</h2>
                 <p class="mt-3 fs-4"><?php echo count($customers); ?></p>
             </div>
-            <div class="col border border-3 shadow-lg p-2 text-center bg-secondary-subtle">
+            <div class="col border p-2 text-center">
                 <h2 class="fs-4">Total Number of Products</h2>
                 <p class="mt-3 fs-4"><?php echo count($products); ?></p>
             </div>
-            <div class="col border border-3 shadow-lg p-2 text-center bg-secondary-subtle">
+            <div class="col border p-2 text-center">
                 <h2 class="fs-4">Total Number of Orders</h2>
                 <p class="mt-3 fs-4"><?php echo count($order_summaries); ?></p>
             </div>
         </div>
-        <div class="container bg-dark bg-opacity-25 py-5">
+        <div class="container bg-warning py-5">
             <h2 class="mx-5 text-dark text-center">An Overview of Order</h2>
-            <div class="container my-5 justify-content-around">
-                <div class="col border border-3 shadow  text-center bg-secondary-subtle">
+            <div class="container my-5 justify-content-around d-flex column-gap-3">
+                <div class="col text-center bg-warning-subtle">
                     <h3>Latest Order ID and Summary</h3>
                     <p class="mt-3"><span>Customer Name :</span>
                         <?php
@@ -91,7 +89,7 @@
                         <?php echo "RM " . number_format((float)$latest_order['total_amount'], 2, '.', ''); ?>
                     </p>
                 </div>
-                <div class="col border border-3 shadow  text-center bg-secondary-subtle mt-3">
+                <div class="col text-center bg-warning-subtle">
                     <h3>Highest Purchased Amount Order</h3>
                     <p class="mt-3"><span>Customer Name :</span>
                         <?php
@@ -119,10 +117,10 @@
                 </div>
             </div>
         </div>
-        <div class="container bg-dark bg-opacity-50 py-5">
-            <h2 class="mx-5 text-white text-center">An Overview of Our Product</h2>
-            <div class="container my-5 justify-content-around">
-                <div class="col border border-3 shadow text-center bg-secondary-subtle">
+        <div class="container bg-warning-subtle py-4">
+            <h2 class="mx-5 text-black text-center">An Overview of Our Product</h2>
+            <div class="container my-5 justify-content-around d-flex column-gap-3">
+                <div class="col text-center bg-warning">
                     <h3>Top 5 Selling Products</h3>
                     <?php
                     $top_product_query = "SELECT product_id, SUM(quantity) AS total_quantity FROM order_details GROUP BY product_id ORDER BY total_quantity DESC";
@@ -145,7 +143,7 @@
                     }
                     ?>
                 </div>
-                <div class="col border border-3 shadow text-center bg-secondary-subtle mt-3">
+                <div class="col text-center bg-warning">
                     <h3>3 Products Never Purchased</h3>
                     <?php
                     $no_purchased_product_query = "SELECT id FROM products WHERE NOT EXISTS(SELECT product_id FROM order_details WHERE order_details.product_id=products.id)";

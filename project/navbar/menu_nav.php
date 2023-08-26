@@ -17,73 +17,69 @@ if (isset($_GET['logout'])) {
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="index.php">Home</a>
-                    </li>
+    <nav class="navbar navbar-expand-lg bg-warning" style="height: 70px;">
+        <a class="navbar-brand" href="#"><img src="image/Logo.png" alt="logo" width="150"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end me-3 ms-3" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="index.php">Home</a>
+                </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Product
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li> <a class="dropdown-item" href="product_create.php">Create Product</a></li>
-                            <li> <a class="dropdown-item" href="product_read.php">Read Product</a></li>
-                        </ul>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Product
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li> <a class="dropdown-item" href="product_create.php">Create Product</a></li>
+                        <li> <a class="dropdown-item" href="product_read.php">Read Product</a></li>
+                    </ul>
+                </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Customer
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li> <a class="dropdown-item" href="customer_create.php">Create Customer</a></li>
-                            <li> <a class="dropdown-item" href="customer_read.php">Read Customer</a></li>
-                        </ul>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Customer
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li> <a class="dropdown-item" href="customer_create.php">Create Customer</a></li>
+                        <li> <a class="dropdown-item" href="customer_read.php">Read Customer</a></li>
+                    </ul>
+                </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Category
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li> <a class="dropdown-item" href="category_create.php">Create Category</a></li>
-                            <li> <a class="dropdown-item" href="category_read.php">Read Category</a></li>
-                        </ul>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Category
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li> <a class="dropdown-item" href="category_create.php">Create Category</a></li>
+                        <li> <a class="dropdown-item" href="category_read.php">Read Category</a></li>
+                    </ul>
+                </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Order
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li> <a class="dropdown-item" href="order_create.php">New Order</a></li>
-                            <li> <a class="dropdown-item" href="order_list_read.php">Order Read</a></li>
-                        </ul>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Order
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li> <a class="dropdown-item" href="order_create.php">New Order</a></li>
+                        <li> <a class="dropdown-item" href="order_list_read.php">Order Read</a></li>
+                    </ul>
+                </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="contact_form.php">Contact</a>
-                    </li>
+                <li class="nav-item ">
+                    <a class="nav-link" aria-current="page" href="contact_form.php">Contact</a>
+                </li>
 
-                    <li class="nav-item text-end">
-                        <a class="nav-link" href="?logout=true">Logout</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="?logout=true">Logout</a>
 
-                    </li>
+                </li>
 
-
-
-
-                </ul>
-            </div>
+            </ul>
         </div>
+
     </nav>
 </body>
 
