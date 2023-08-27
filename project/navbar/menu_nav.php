@@ -17,8 +17,8 @@ if (isset($_GET['logout'])) {
 
 <body>
 
-    <nav class="navbar navbar-expand-lg bg-warning" style="height: 70px;">
-        <a class="navbar-brand" href="#"><img src="image/Logo.png" alt="logo" width="150"></a>
+    <nav class="navbar navbar-expand-lg bg-warning py-0">
+        <a class="navbar-brand py-0" href="#"><img src="image/Logo.png" alt="logo" height="100"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
