@@ -39,7 +39,7 @@
             echo "<div class='alert alert-danger'>This customer make a order.</div>";
         }
         $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
-        $query = "SELECT id, username, first_name, last_name, email, status FROM customer";
+        $query = "SELECT id, username, first_name, last_name, email, status,image FROM customer";
         if (!empty($searchKeyword)) {
             $query .= " WHERE username LIKE :keyword OR first_name LIKE :keyword OR last_name LIKE :keyword OR email LIKE :keyword";
             $searchKeyword = "%{$searchKeyword}%";
@@ -71,10 +71,11 @@
             echo "<tr>";
             echo "<th>ID</th>";
             echo "<th>Username</th>";
+            echo "<th class='col-1'>Image</th>";
             echo "<th>First Name</th>";
             echo "<th>Last Name</th>";
             echo "<th>email</th>";
-            echo "<th>Action</th>";
+            echo "<th class='col-2'>Action</th>";
             echo "</tr>";
 
             // table body will be here
@@ -86,13 +87,18 @@
                 // creating new table row per record
                 echo "<tr>";
                 echo "<td>{$id}</td>";
-                echo "<td>{$username}</td>";
+                echo "<td><a class='link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover link-dark text-dark' href='customer_read_one.php?id={$id}' >{$username}</a></td>";
+                echo "<td>";
+                echo ($image == "")
+                    ? "<img src='image/customer_img.jpg' width='100' height='100'>"
+                    : "<img src='uploads/" . htmlspecialchars($image, ENT_QUOTES) . "' width='100' height='100'>";
+                echo "</td>";
                 echo "<td>{$first_name}</td>";
                 echo "<td>{$last_name}</td>";
                 echo "<td>{$email}</td>";
                 echo "<td>";
                 // read one record
-                echo "<a href='customer_read_one.php?id={$id}' class='btn btn-info me-3'>Read</a>";
+                // echo "<a href='customer_read_one.php?id={$id}' class='btn btn-info me-3'>Read</a>";
 
                 // we will use this links on next part of this post
                 echo "<a href='customer_update.php?id={$id}' class='btn btn-primary me-3'>Edit</a>";

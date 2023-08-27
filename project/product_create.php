@@ -28,8 +28,6 @@
             // include database connection
 
             try {
-                // insert query
-
                 $name = $_POST['name'];
                 $description = $_POST['description'];
                 $price = $_POST['price'];
@@ -42,7 +40,37 @@
                     : "";
                 $image = htmlspecialchars(strip_tags($image));
 
+                // upload to file to folder
+                $target_directory = "uploads/";
+                $target_file = $target_directory . $image;
+                //pathinfo找是不是.jpg,.png
+                $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
+
                 $errors = array();
+
+                if ($image) {
+                    $check = getimagesize($_FILES["image"]["tmp_name"]);
+                    $image_width = $check[0];
+                    $image_height = $check[1];
+                    if ($image_width !== $image_height) {
+                        $errors[] = "<div>Only square images are allowed.</div>";
+                    }
+                    if ($_FILES['image']['size'] > (524288)) {
+                        $errors[] = "<div>Image must be less than 512 KB in size.</div>";
+                    }
+                    if ($check == false) {
+                        $errors[] = "<div>Submitted file is not an image.</div>";
+                    }
+                    // make sure certain file types are allowed
+                    $allowed_file_types = array("jpg", "jpeg", "png", "gif");
+                    if (!in_array($file_type, $allowed_file_types)) {
+                        $errors[] = "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
+                    }
+                    // make sure file does not exist
+                    if (file_exists($target_file)) {
+                        $errors[] = "<div>Image already exists. Try to change file name.</div>";
+                    }
+                }
                 if (empty($name)) {
                     $errors[] = 'Product name is required.';
                 }
@@ -57,13 +85,17 @@
                     $errors[] = "Price must be a numeric value.";
                 }
 
-
-                if (empty($promotion)) {
-                    $errors[] = 'promotion is required.';
-                } elseif ($promotion >= $price) {
+                if ($promotion >= $price) {
                     $errors[] = 'Promotion price must be cheaper than original price.';
                 }
 
+                if (!empty($promotion) && !is_numeric($promotion)) {
+                    $errors[] = 'Promotion price must be a numeric value.';
+                }
+
+                if (empty($expired)) {
+                    $errors[] = "Expired date is required.";
+                }
 
                 if (empty($manufacture)) {
                     $errors[] = 'manufacture is required.';
@@ -79,88 +111,56 @@
                     }
                     echo "</div>";
                 } else {
-                    if ($image) {
-                        // upload to file to folder
-                        $target_directory = "uploads/";
-                        $target_file = $target_directory . $image;
-                        $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
-                        // error message is empty
-                        $file_upload_error_messages = "";
-                        // make sure that file is a real image
-                        $check = getimagesize($_FILES["image"]["tmp_name"]);
-                        $image_width = $check[0];
-                        $image_height = $check[1];
-                        if ($image_width !== $image_height) {
-                            $file_upload_error_messages .= "<div>Only square images are allowed.</div>";
-                        }
-                        if ($check !== false) {
-                            // submitted file is an image
-                        } else {
-                            $file_upload_error_messages .= "<div>Submitted file is not an image.</div>";
-                        }
-                        // make sure certain file types are allowed
-                        $allowed_file_types = array("jpg", "jpeg", "png", "gif");
-                        if (!in_array($file_type, $allowed_file_types)) {
-                            $file_upload_error_messages .= "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
-                        }
-                        // make sure file does not exist
-                        if (file_exists($target_file)) {
-                            $file_upload_error_messages = "<div>Image already exists. Try to change file name.</div>";
-                        }
-                        // make sure submitted file is not too large, can't be larger than 1 MB
-                        if ($_FILES['image']['size'] > (1024000)) {
-                            $file_upload_error_messages .= "<div>Image must be less than 1 MB in size.</div>";
-                        }
 
-                        // make sure the 'uploads' folder exists
-                        // if not, create it
-                        if (!is_dir($target_directory)) {
-                            mkdir($target_directory, 0777, true);
-                        }
-                        // if $file_upload_error_messages is still empty
-                        if (empty($file_upload_error_messages)) {
-                            // it means there are no errors, so try to upload the file
-                            if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                                // it means photo was uploaded
-                            } else {
+                    // bind the parameters
+                    $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created, promotion_price=:promotion, manufacture_date=:manufacture, expired_date=:expired, category_name=:category_name, image=:image";
+                    // prepare query for execution
+                    $stmt = $con->prepare($query);
+                    $stmt->bindParam(':name', $name);
+                    $stmt->bindParam(':description', $description);
+                    $stmt->bindParam(':price', $price);
+                    $created = date('Y-m-d H:i:s'); // get the current date and time
+                    $stmt->bindParam(':created', $created);
+                    $stmt->bindParam(':promotion', $promotion);
+                    $stmt->bindParam(':manufacture', $manufacture);
+                    $stmt->bindParam(':expired', $expired);
+                    $stmt->bindParam(':category_name', $category_name);
+                    $stmt->bindParam(':image', $image);
+                    // Execute the query
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was saved.</div>";
+                        // now, if image is not empty, try to upload the image
+                        if ($image) {
+                            // make sure the 'uploads' folder exists
+                            // if not, create it
+                            if (!is_dir($target_directory)) {
+                                mkdir($target_directory, 0777, true);
+                            }
+                            // if $file_upload_error_messages is still empty
+                            if (empty($file_upload_error_messages)) {
+                                // it means there are no errors, so try to upload the file
+                                if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                                    // it means photo was uploaded
+                                } else {
+                                    echo "<div class='alert alert-danger'>";
+                                    echo "<div>Unable to upload photo.</div>";
+                                    echo "<div>Update the record to upload photo.</div>";
+                                    echo "</div>";
+                                }
+                            }
+
+                            // if $file_upload_error_messages is NOT empty
+                            else {
+                                // it means there are some errors, so show them to user
                                 echo "<div class='alert alert-danger'>";
-                                echo "<div>Unable to upload photo.</div>";
+                                echo "<div>{$file_upload_error_messages}</div>";
                                 echo "<div>Update the record to upload photo.</div>";
                                 echo "</div>";
                             }
                         }
-
-                        // if $file_upload_error_messages is NOT empty
-                        else {
-                            // it means there are some errors, so show them to user
-                            echo "<div class='alert alert-danger'>";
-                            echo "<div>{$file_upload_error_messages}</div>";
-                            echo "<div>Update the record to upload photo.</div>";
-                            echo "</div>";
-                        }
+                        $_POST = array();
                     } else {
-                        // bind the parameters
-                        $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created, promotion_price=:promotion, manufacture_date=:manufacture, expired_date=:expired, category_name=:category_name, image=:image";
-                        // prepare query for execution
-                        $stmt = $con->prepare($query);
-                        $stmt->bindParam(':name', $name);
-                        $stmt->bindParam(':description', $description);
-                        $stmt->bindParam(':price', $price);
-                        $created = date('Y-m-d H:i:s'); // get the current date and time
-                        $stmt->bindParam(':created', $created);
-                        $stmt->bindParam(':promotion', $promotion);
-                        $stmt->bindParam(':manufacture', $manufacture);
-                        $stmt->bindParam(':expired', $expired);
-                        $stmt->bindParam(':category_name', $category_name);
-                        $stmt->bindParam(':image', $image);
-                        // Execute the query
-                        if ($stmt->execute()) {
-                            echo "<div class='alert alert-success'>Record was saved.</div>";
-                            // now, if image is not empty, try to upload the image
-                            $_POST = array();
-                        } else {
-                            echo "<div class='alert alert-danger'>Unable to save record.</div>";
-                        }
+                        echo "<div class='alert alert-danger'>Unable to save record.</div>";
                     }
                 }
             }    // show error
@@ -218,7 +218,7 @@
                 </tr>
                 <tr>
                     <td>Photo</td>
-                    <td><input type="file" class='form-control' name="image" /></td>
+                    <td><input type="file" class='form-control' name="image" accept="image/*" /></td>
                 </tr>
                 <tr>
                     <td></td>

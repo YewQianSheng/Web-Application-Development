@@ -44,15 +44,17 @@
         catch (PDOException $exception) {
             die('ERROR: ' . $exception->getMessage());
         }
+        ?>
+
+        <?php
         if ($_POST) {
             try {
                 $query = "UPDATE customer
-                SET username=:username, first_name=:first_name, last_name=:last_name, gender=:gender, birth=:birth, email=:email,
+               SET first_name=:first_name, last_name=:last_name, gender=:gender, birth=:birth, email=:email,
                status=:status,image=:image";
                 // prepare query for excecution
                 $stmt = $con->prepare($query);
                 // posted values
-                $username = htmlspecialchars(strip_tags($_POST['username']));
                 $old_password = $_POST['old_password'];
                 $new_password = $_POST['new_password'];
                 $confirm_password = $_POST['confirm_password'];
@@ -66,24 +68,54 @@
                     ? sha1_file($_FILES['image']['tmp_name']) . "-" . basename($_FILES["image"]["name"])
                     : "";
                 $image = htmlspecialchars(strip_tags($image));
+                $target_directory = "uploads/";
+                $target_file = $target_directory . $image;
+                //pathinfo找是不是.jpg,.png
+                $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
                 $error = array();
+
+                if ($image) {
+                    $check = getimagesize($_FILES["image"]["tmp_name"]);
+                    $image_width = $check[0];
+                    $image_height = $check[1];
+                    if ($image_width != $image_height) {
+                        $error[] = "Only square size image allowed.";
+                    }
+                    // make sure submitted file is not too large, can't be larger than 1 MB
+                    if ($_FILES['image']['size'] > (524288)) {
+                        $error[] = "<div>Image must be less than 512 KB in size.</div>";
+                    }
+                    if ($check == false) {
+                        // make sure that file is a real image
+                        $error[] = "<div>Submitted file is not an image.</div>";
+                    }
+                    // make sure certain file types are allowed
+                    $allowed_file_types = array("jpg", "jpeg", "png", "gif");
+                    if (!in_array($file_type, $allowed_file_types)) {
+                        $error[] = "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
+                    }
+                    // make sure file does not exist
+                    if (file_exists($target_file)) {
+                        $error[] = "<div>Image already exists. Try to change file name.</div>";
+                    }
+                }
                 if (!empty($old_password) && !empty($new_password) && !empty($confirm_password)) {
                     // Password format validation
                     if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*[-+$()%@#]).{6,}$/', $new_password)) {
-                        $errors[] = 'Invalid new password format.';
+                        $error[] = 'Invalid new password format.';
                     } else {
                         if ($new_password == $confirm_password) {
                             if (password_verify($old_password, $password)) {
                                 if ($old_password == $new_password) {
-                                    $errors[] = "New password can't be the same as the old password.";
+                                    $error[] = "New password can't be the same as the old password.";
                                 } else {
                                     $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
                                 }
                             } else {
-                                $errors[] = "Wrong password entered in the old password column.";
+                                $error[] = "Wrong password entered in the old password column.";
                             }
                         } else {
-                            $errors[] = "The confirm password doesn't match the new password.";
+                            $error[] = "The confirm password doesn't match the new password.";
                         }
                     }
                 } else {
@@ -109,48 +141,27 @@
                     $stmt = $con->prepare($query);
                     // bind the parameters
                     $stmt->bindParam(':id', $id);
-                    $stmt->bindParam(':username', $username);
                     if (isset($hashed_password)) {
                         $stmt->bindParam(':password', $hashed_password);
                     }
-                    $stmt->bindParam(':username', $username);
+
                     $stmt->bindParam(':first_name', $first_name);
                     $stmt->bindParam(':last_name', $last_name);
                     $stmt->bindParam(':gender', $gender);
                     $stmt->bindParam(':birth', $birth);
                     $stmt->bindParam(':email', $email);
                     $stmt->bindParam(':status', $status);
+
                     $stmt->bindParam(':image', $image);
+
                     // Execute the query
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was updated.</div>";
                         if ($image) {
-                            // upload to file to folder
-                            $target_directory = "uploads/";
-                            $target_file = $target_directory . $image;
-                            $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
-                            // error message is empty
-                            $file_upload_error_messages = "";
-                            // make sure that file is a real image
-                            $check = getimagesize($_FILES["image"]["tmp_name"]);
-                            if ($check !== false) {
-                                // submitted file is an image
-                            } else {
-                                $file_upload_error_messages .= "<div>Submitted file is not an image.</div>";
+                            if ($target_file != ('uploads/' . $row['image']) && $row['image'] != "") {
+                                unlink('uploads/' . $row['image']);
                             }
-                            // make sure certain file types are allowed
-                            $allowed_file_types = array("jpg", "jpeg", "png", "gif");
-                            if (!in_array($file_type, $allowed_file_types)) {
-                                $file_upload_error_messages .= "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
-                            }
-                            // make sure file does not exist
-                            if (file_exists($target_file)) {
-                                $file_upload_error_messages = "<div>Image already exists. Try to change file name.</div>";
-                            }
-                            // make sure submitted file is not too large, can't be larger than 1 MB
-                            if ($_FILES['image']['size'] > (1024000)) {
-                                $file_upload_error_messages .= "<div>Image must be less than 1 MB in size.</div>";
-                            }
+
                             // make sure the 'uploads' folder exists
                             // if not, create it
                             if (!is_dir($target_directory)) {
@@ -168,7 +179,6 @@
                                     echo "</div>";
                                 }
                             }
-
                             // if $file_upload_error_messages is NOT empty
                             else {
                                 // it means there are some errors, so show them to user
@@ -178,6 +188,9 @@
                                 echo "</div>";
                             }
                         }
+                        //     echo "<script>
+                        //     window.location.href = 'customer_read_one.php?id={$id}';
+                        //   </script>";
                     } else {
                         echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
                     }
@@ -185,7 +198,11 @@
             }
             // show errors
             catch (PDOException $exception) {
-                echo "<div class='alert alert-danger'>ERROR: " . $exception->getMessage() . "</div>";
+                if ($exception->getCode() == 23000) {
+                    echo '<div class= "alert alert-danger role=alert">' . 'Email has been taken. Please provide other email ' . '</div>';
+                } else {
+                    echo '<div class= "alert alert-danger role=alert">' . $exception->getMessage() . '</div>';
+                }
             }
         } ?>
 
@@ -193,7 +210,7 @@
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
                     <td>User Name</td>
-                    <td><input type='text' name='username' value="<?php echo htmlspecialchars($username, ENT_QUOTES);  ?>" class='form-control' /></td>
+                    <td><?php echo htmlspecialchars($username, ENT_QUOTES);  ?></td>
                 </tr>
                 <tr>
                     <td>Old Password</td>
@@ -264,10 +281,10 @@
                     <td>
                         <?php
                         if ($image == "") {
-                            echo '<img src="image/customer_img.jpg"> <br>';
+                            echo '<img src="image/customer_img.jpg" alt="image" width="100"> <br>';
                             echo '<input type="file" name="image" />';
                         } else {
-                            echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '"> <br>';
+                            echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '"width="100"> <br>';
                             echo '<input type="file" name="image" />';
                         }
                         ?>

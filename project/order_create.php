@@ -24,6 +24,12 @@
     date_default_timezone_set('asia/Kuala_Lumpur');
     // include database connection
     include 'config/database.php';
+
+    $customer_query = "SELECT id, username FROM customer";
+    $customer_stmt = $con->prepare($customer_query);
+    $customer_stmt->execute();
+    $customers = $customer_stmt->fetchAll(PDO::FETCH_ASSOC);
+
     $query = "SELECT * FROM products";
     $stmt = $con->prepare($query);
     $stmt->execute();
@@ -38,7 +44,11 @@
         $customer = $_POST['customer'];
         $total_amount = 0;
 
-
+        $status_query = "SELECT * FROM customer WHERE id=?";
+        $status_stmt = $con->prepare($status_query);
+        $status_stmt->bindParam(1, $customer);
+        $status_stmt->execute();
+        $status = $status_stmt->fetch(PDO::FETCH_ASSOC);
         //array 里面有一样的东西就会删除
         $noduplicate = array_unique($product_id);
         //check有多少个东西
@@ -56,6 +66,10 @@
 
         if (empty($customer)) {
           $error[] = "You need to select the customer.";
+        }
+
+        if ($status['status'] == "Inactive") {
+          $error[] = "Inactive account can't make a order";
         }
 
         if (isset($selected_product_count)) {
@@ -105,19 +119,22 @@
 
           $quantity = $_POST['quantity'];
 
-          $details_query = "INSERT INTO order_details SET order_id=:order_id, product_id=:product_id, quantity=:quantity";
-          $details_stmt = $con->prepare($details_query);
+
 
           for ($i = 0; $i < count($product_id); $i++) {
-
+            $details_query = "INSERT INTO order_details SET order_id=:order_id, product_id=:product_id, quantity=:quantity";
+            $details_stmt = $con->prepare($details_query);
             $details_stmt->bindParam(':order_id', $order_id);
             $details_stmt->bindParam(':product_id', $product_id[$i]);
             $details_stmt->bindParam(':quantity', $quantity[$i]);
             $details_stmt->execute();
           }
+
+
           echo "<script>
-          window.location.href = 'order_detail_read.php?id={$order_id}&action=create_order_successfully';
-        </script>";
+            window.location.href = 'order_detail_read.php?id={$order_id}&action=create_order_successfully';
+          </script>";
+          $_POST = array();
         }
       } catch (PDOException $exception) {
         echo '<div class="alert alert-danger role=alert">' . $exception->getMessage() . '</div>';

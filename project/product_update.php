@@ -75,7 +75,45 @@
                     ? sha1_file($_FILES['image']['tmp_name']) . "-" . basename($_FILES["image"]["name"])
                     : "";
                 $image = htmlspecialchars(strip_tags($image));
+
+                $target_directory = "uploads/";
+                $target_file = $target_directory . $image;
+                $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
+
                 $errors = array();
+
+                if ($image) {
+                    // upload to file to folder
+
+                    // error message is empty
+                    $file_upload_error_messages = "";
+                    // make sure that file is a real image
+                    $check = getimagesize($_FILES["image"]["tmp_name"]);
+                    $image_width = $check[0];
+                    $image_height = $check[1];
+                    if ($image_width != $image_height) {
+                        $errors[] = "Only square size image allowed.";
+                    }
+                    // make sure submitted file is not too large, can't be larger than 1 MB
+                    if ($_FILES['image']['size'] > (524288)) {
+                        $errors[] = "<div>Image must be less than 512 KB in size.</div>";
+                    }
+                    if ($check !== false) {
+                        // submitted file is an image
+                    } else {
+                        $errors[] = "<div>Submitted file is not an image.</div>";
+                    }
+                    // make sure certain file types are allowed
+                    $allowed_file_types = array("jpg", "jpeg", "png", "gif");
+                    if (!in_array($file_type, $allowed_file_types)) {
+                        $errors[] = "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
+                    }
+                    // make sure file does not exist
+                    if (file_exists($target_file)) {
+                        $errors[] = "<div>Image already exists. Try to change file name.</div>";
+                    }
+                }
+
                 if (empty($name)) {
                     $errors[] = 'Product name is required.';
                 }
@@ -90,10 +128,7 @@
                     $errors[] = "Price must be a numeric value.";
                 }
 
-
-                if (empty($promotion_price)) {
-                    $errors[] = 'promotion is required.';
-                } elseif ($promotion_price >= $price) {
+                if ($promotion_price >= $price) {
                     $errors[] = 'Promotion price must be cheaper than original price.';
                 }
 
@@ -122,37 +157,22 @@
                     $stmt->bindParam(':category_name', $category_name);
                     $stmt->bindParam(':manufacture_date', $manufacture_date);
                     $stmt->bindParam(':expired_date', $expired_date);
-                    $stmt->bindParam(':image', $image);
+                    if ($image == "") {
+                        $stmt->bindParam(":image", $row['image']);
+                    } else {
+                        $stmt->bindParam(':image', $target_file);
+                    }
                     $stmt->bindParam(':id', $id);
                     // Execute the query
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was updated.</div>";
                         if ($image) {
-                            // upload to file to folder
-                            $target_directory = "uploads/";
-                            $target_file = $target_directory . $image;
-                            $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
-                            // error message is empty
-                            $file_upload_error_messages = "";
-                            // make sure that file is a real image
-                            $check = getimagesize($_FILES["image"]["tmp_name"]);
-                            if ($check !== false) {
-                                // submitted file is an image
-                            } else {
-                                $file_upload_error_messages .= "<div>Submitted file is not an image.</div>";
-                            }
-                            // make sure certain file types are allowed
-                            $allowed_file_types = array("jpg", "jpeg", "png", "gif");
-                            if (!in_array($file_type, $allowed_file_types)) {
-                                $file_upload_error_messages .= "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
-                            }
-                            // make sure file does not exist
-                            if (file_exists($target_file)) {
-                                $file_upload_error_messages = "<div>Image already exists. Try to change file name.</div>";
+                            if ($target_file != ('uploads/' . $row['image']) && $row['image'] != "") {
+                                unlink('uploads/' . $row['image']);
                             }
                             // make sure submitted file is not too large, can't be larger than 1 MB
                             if ($_FILES['image']['size'] > (1024000)) {
-                                $file_upload_error_messages .= "<div>Image must be less than 1 MB in size.</div>";
+                                $errors[] = "<div>Image must be less than 1 MB in size.</div>";
                             }
                             // make sure the 'uploads' folder exists
                             // if not, create it
@@ -181,6 +201,8 @@
                                 echo "</div>";
                             }
                         }
+
+                        // header("Location: product_read_one.php?id={$id}");
                     } else {
                         echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
                     }
@@ -244,10 +266,10 @@
                     <td>
                         <?php
                         if ($image == "") {
-                            echo '<img src="image/CS_image.jpg"> <br>';
+                            echo '<img src="image/CS_image.jpg" width="100"> <br>';
                             echo '<input type="file" name="image" />';
                         } else {
-                            echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '"> <br>';
+                            echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '"width="100"> <br>';
                             echo '<input type="file" name="image" />';
                         }
                         ?>

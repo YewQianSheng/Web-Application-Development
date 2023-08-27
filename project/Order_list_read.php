@@ -31,7 +31,7 @@
             $query .= " WHERE customer.first_name LIKE :keyword OR customer.last_name LIKE :keyword";
             $searchKeyword = "%{$searchKeyword}%";
         }
-        $query .= " ORDER BY order_summary.order_id ASC";
+        $query .= " ORDER BY order_summary.order_id DESC";
         $stmt = $con->prepare($query);
         if (!empty($searchKeyword)) {
             $stmt->bindParam(':keyword', $searchKeyword);

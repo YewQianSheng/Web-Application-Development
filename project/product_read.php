@@ -43,7 +43,7 @@
         }
         // delete message prompt will be here
         $searchKeyword = isset($_GET['search']) ? $_GET['search'] : '';
-        $query = "SELECT id, name, description, price,promotion_price,category_name FROM products";
+        $query = "SELECT id, name, description, price,promotion_price,category_name,image FROM products";
         if (!empty($searchKeyword)) {
             $query .= " WHERE name LIKE :keyword";
             $searchKeyword = "%{$searchKeyword}%";
@@ -72,6 +72,7 @@
             echo "<tr>";
             echo "<th>ID</th>";
             echo "<th>Name</th>";
+            echo "<th class='col-1'>Image</th>";
             echo "<th>Description</th>";
             echo "<th>Price</th>";
             echo "<th>Category Name</th>";
@@ -87,23 +88,27 @@
                 // creating new table row per record
                 echo "<tr>";
                 echo "<td>{$id}</td>";
-                echo "<td>{$name}</td>";
+                echo "<td><a class='link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover link-dark text-dark'  href='product_read_one.php?id={$id}'>{$name}</a></td>";
+                echo "<td>";
+                echo ($image == "")
+                    ? "<img src='image/CS_image.jpg' width='100' height='100'>"
+                    : "<img src='uploads/" . htmlspecialchars($image, ENT_QUOTES) . "' width='100' height='100'>";
+                echo "</td>";
                 echo "<td>{$description}</td>";
 
                 echo "<td class='text-end'>";
                 if (!empty($promotion_price)) {
                     // Display promotion price if available
-                    echo "<div class='text-decoration-line-through'>" . number_format($price, 2) . "</div>";
-                    echo number_format($promotion_price, 2);
+                    echo "<div class='text-decoration-line-through'>" . "RM " . number_format($price, 2) . "</div>";
+                    echo "RM " .  number_format($promotion_price, 2);
                 } else {
                     // Display regular price
-                    echo number_format($price, 2);
+                    echo "RM " .  number_format($price, 2);
                 }
                 echo "</td>";
                 echo "<td>{$category_name}</tb>";
                 echo "<td>";
                 // read one record
-                echo "<a href='product_read_one.php?id={$id}' class='btn btn-info me-3'>Read</a>";
 
                 // we will use this links on next part of this post
                 echo "<a href='product_update.php?id={$id}' class='btn btn-primary me-3'>Edit</a>";
@@ -121,11 +126,6 @@
             echo "<div class='alert alert-danger'>No records found.</div>";
         }
         ?>
-
-
-
-
-
     </div> <!-- end .container -->
     <script type='text/javascript'>
         // confirm record deletion

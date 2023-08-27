@@ -103,9 +103,9 @@
                 <td>
                     <?php
                     if ($image == "") {
-                        echo '<img src="image/customer_img.jpg">';
+                        echo '<img src="image/customer_img.jpg" alt="image" width="100">';
                     } else {
-                        echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '">';
+                        echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '"width="100">';
                     }
                     ?>
                 </td>

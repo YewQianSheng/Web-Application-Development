@@ -76,11 +76,11 @@
             </tr>
             <tr>
                 <td>Price</td>
-                <td><?php echo htmlspecialchars($price, ENT_QUOTES);  ?></td>
+                <td><?php echo htmlspecialchars("RM " . number_format($price, 2), ENT_QUOTES);  ?></td>
             </tr>
             <tr>
                 <td>Promotion Price</td>
-                <td><?php echo htmlspecialchars($promotion_price, ENT_QUOTES);  ?></td>
+                <td><?php echo htmlspecialchars("RM " . number_format($promotion_price, 2), ENT_QUOTES);  ?></td>
             </tr>
             <tr>
                 <td>Category Name</td>
@@ -99,9 +99,9 @@
                 <td>
                     <?php
                     if ($image == "") {
-                        echo '<img src="image/CS_image.jpg">';
+                        echo '<img src="image/CS_image.jpg" width="100">';
                     } else {
-                        echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '">';
+                        echo '<img src="uploads/' . htmlspecialchars($image, ENT_QUOTES) . '"width="100">';
                     }
                     ?>
                 </td>
