@@ -85,6 +85,10 @@
                     $errors[] = "Price must be a numeric value.";
                 }
 
+                if ($manufacture > date('Y-m-d')) {
+                    $errors[] = "Date of birth cannot be greater than the current date.";
+                }
+
                 if ($promotion >= $price) {
                     $errors[] = 'Promotion price must be cheaper than original price.';
                 }
@@ -125,7 +129,7 @@
                     $stmt->bindParam(':manufacture', $manufacture);
                     $stmt->bindParam(':expired', $expired);
                     $stmt->bindParam(':category_name', $category_name);
-                    $stmt->bindParam(':image', $image);
+                    $stmt->bindParam(':image', $target_file);
                     // Execute the query
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was saved.</div>";

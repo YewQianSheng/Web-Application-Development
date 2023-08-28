@@ -117,7 +117,7 @@
             <table class='table table-hover table-responsive table-bordered' id="row_del">
 
                 <span>Customer Name</span>
-                <input type="text" class="form-control" value="<?php echo $customer[$order_summaries['customer_id']]['username'] ?>">
+                <input type="text" readonly class="form-control" value="<?php echo $customer[$order_summaries['customer_id']]['username'] ?>">
                 <br>
 
                 <tr>

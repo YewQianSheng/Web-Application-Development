@@ -65,15 +65,33 @@
                 // posted values
                 $category_name = htmlspecialchars(strip_tags($_POST['category_name']));
                 $description = htmlspecialchars(strip_tags($_POST['description']));
-                // bind the parameters
-                $stmt->bindParam(':id', $id);
-                $stmt->bindParam(':category_name', $category_name);
-                $stmt->bindParam(':description', $description);
-                // Execute the query
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Record was updated.</div>";
+
+                $errors = array();
+                if (empty($category_name)) {
+                    $errors[] = 'Category name is required.';
+                }
+
+                if (empty($description)) {
+                    $errors[] = 'Description is required.';
+                }
+                if (!empty($errors)) {
+                    echo "<div class='alert alert-danger m-3'>";
+                    foreach ($errors as $error) {
+                        echo $error . "<br>";
+                    }
+                    echo "</div>";
                 } else {
-                    echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+
+                    // bind the parameters
+                    $stmt->bindParam(':id', $id);
+                    $stmt->bindParam(':category_name', $category_name);
+                    $stmt->bindParam(':description', $description);
+                    // Execute the query
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was updated.</div>";
+                    } else {
+                        echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                    }
                 }
             }
             // show errors

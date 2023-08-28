@@ -66,9 +66,7 @@
 
         if (empty($customer)) {
           $error[] = "You need to select the customer.";
-        }
-
-        if ($status['status'] == "Inactive") {
+        } else if ($status['status'] == "Inactive") {
           $error[] = "Inactive account can't make a order";
         }
 

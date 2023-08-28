@@ -103,6 +103,10 @@
                     $errors[] = "Date of birth is required.";
                 }
 
+                if ($birth > date('Y-m-d')) {
+                    $errors[] = "Date of birth cannot be greater than the current date.";
+                }
+
                 if (empty($status)) {
                     $errors[] = 'Account status is required.';
                 }
@@ -130,7 +134,7 @@
                     $registration = date('Y-m-d H:i:s'); // get the current date and time
                     $stmt->bindParam(':registration', $registration);
                     $stmt->bindParam(':email', $email);
-                    $stmt->bindParam(':image', $image);
+                    $stmt->bindParam(':image', $target_file);
                     if ($stmt->execute()) {
                         echo "<div class='alert alert-success'>Record was saved.</div>";
 

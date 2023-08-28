@@ -91,7 +91,7 @@
                 echo "<td>";
                 echo ($image == "")
                     ? "<img src='image/customer_img.jpg' width='100' height='100'>"
-                    : "<img src='uploads/" . htmlspecialchars($image, ENT_QUOTES) . "' width='100' height='100'>";
+                    : "<img src='" . ($image) . "' width='100' height='100'>";
                 echo "</td>";
                 echo "<td>{$first_name}</td>";
                 echo "<td>{$last_name}</td>";
