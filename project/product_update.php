@@ -21,6 +21,7 @@
         // get passed parameter value, in this case, the record ID
         // isset() is a PHP function used to verify if a value is there or not
         $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
+
         //include database connection
         include 'config/database.php';
         // read current record's data
@@ -68,7 +69,7 @@
                     $delete_stmt->execute();
                     unlink($image);
                     echo "<script>
-                    window.location.href = 'customer_read_one.php?id={$id}';
+                    window.location.href = 'product_read_one.php?id={$id}&action=record_updated';
                   </script>";
                 } else {
                     // write update query
@@ -105,11 +106,7 @@
                         $file_upload_error_messages = "";
                         // make sure that file is a real image
                         $check = getimagesize($_FILES["image"]["tmp_name"]);
-                        $image_width = $check[0];
-                        $image_height = $check[1];
-                        if ($image_width != $image_height) {
-                            $errors[] = "Only square size image allowed.";
-                        }
+
                         // make sure submitted file is not too large, can't be larger than 1 MB
                         if ($_FILES['image']['size'] > (524288)) {
                             $errors[] = "<div>Image must be less than 512 KB in size.</div>";
@@ -123,6 +120,12 @@
                         $allowed_file_types = array("jpg", "jpeg", "png", "gif");
                         if (!in_array($file_type, $allowed_file_types)) {
                             $errors[] = "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
+                        } else {
+                            $image_width = $check[0];
+                            $image_height = $check[1];
+                            if ($image_width != $image_height) {
+                                $errors[] = "Only square size image allowed.";
+                            }
                         }
                         // make sure file does not exist
                         if (file_exists($target_file)) {
@@ -185,7 +188,9 @@
                         $stmt->bindParam(':id', $id);
                         // Execute the query
                         if ($stmt->execute()) {
-                            echo "<div class='alert alert-success'>Record was updated.</div>";
+                            echo "<script>
+                            window.location.href = 'product_read_one.php?id={$id}&action=record_updated';
+                          </script>";
                             if ($image) {
                                 if ($target_file !=  $row['image'] && $row['image'] != "") {
                                     unlink($row['image']);

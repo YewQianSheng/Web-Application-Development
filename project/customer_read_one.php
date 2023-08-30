@@ -24,7 +24,10 @@
         // get passed parameter value, in this case, the record ID
         // isset() is a PHP function used to verify if a value is there or not
         $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
-
+        $action = isset($_GET['action']) ? $_GET['action'] : "";
+        if ($action == 'record_updated') {
+            echo "<div class='alert alert-success m-3'>customer record was updated.</div>";
+        }
         //include database connection
         include 'config/database.php';
 

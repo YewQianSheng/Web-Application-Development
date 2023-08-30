@@ -59,7 +59,7 @@
                     $delete_stmt->execute();
                     unlink($image);
                     echo "<script>
-                    window.location.href = 'customer_read_one.php?id={$id}';
+                    window.location.href = 'customer_read_one.php?id={$id}&action=record_updated';
                   </script>";
                 } else {
 
@@ -90,11 +90,7 @@
 
                     if ($image) {
                         $check = getimagesize($_FILES["image"]["tmp_name"]);
-                        $image_width = $check[0];
-                        $image_height = $check[1];
-                        if ($image_width != $image_height) {
-                            $error[] = "Only square size image allowed.";
-                        }
+
                         // make sure submitted file is not too large, can't be larger than 1 MB
                         if ($_FILES['image']['size'] > (524288)) {
                             $error[] = "<div>Image must be less than 512 KB in size.</div>";
@@ -107,6 +103,12 @@
                         $allowed_file_types = array("jpg", "jpeg", "png", "gif");
                         if (!in_array($file_type, $allowed_file_types)) {
                             $error[] = "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
+                        } else {
+                            $image_width = $check[0];
+                            $image_height = $check[1];
+                            if ($image_width != $image_height) {
+                                $error[] = "Only square size image allowed.";
+                            }
                         }
                         // make sure file does not exist
                         if (file_exists($target_file)) {
@@ -136,13 +138,24 @@
                         $hashed_password = $password;
                     }
 
+                    if (empty($first_name)) {
+                        $error[] = "First name is required";
+                    } elseif (preg_match('/\d/', $first_name)) {
+                        $error[] = 'First name cannot contain numbers';
+                    }
+
+                    if (empty($last_name)) {
+                        $error[] = "Last name is required";
+                    } elseif (preg_match('/\d/', $last_name)) {
+                        $error[] = 'Last name cannot contain numbers';
+                    }
 
                     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         $error[] = "Invalid Email format.";
                     }
 
-                    if ($birth > date('Y-m-d')) {
-                        $error[] = "Date of birth cannot be greater than the current date.";
+                    if ($birth >= date('Y-m-d')) {
+                        $error[] = "Date of birth cannot be greater/same than the current date.";
                     }
 
                     if (!empty($error)) {
@@ -177,7 +190,10 @@
                         }
                         // Execute the query
                         if ($stmt->execute()) {
-                            echo "<div class='alert alert-success'>Record was updated.</div>";
+
+                            echo "<script>
+                            window.location.href = 'customer_read_one.php?id={$id}&action=record_updated';
+                          </script>";
                             if ($image) {
                                 if ($target_file !=  $row['image'] && $row['image'] != "") {
                                     unlink($row['image']);
@@ -265,15 +281,17 @@
                     <td>Gender</td>
 
                     <td>
+                        <input type="radio" name="gender" id="gender" value="Male" <?php if ($row['gender'] == "Male") {
+                                                                                        echo 'checked';
+                                                                                    } ?>>
+                        <label class="form-check-label" for="active">Male</label>
+                        <input type="radio" name="gender" id="gender" value="Female" <?php if ($row['gender'] == "Female") {
+                                                                                            echo 'checked';
+                                                                                        } ?>>
+                        <label class="form-check-label" for="gender">Female</label>
+                    </td>
 
-                        <select class="form-select" id="gender" name="gender">
-                            <option value="Male" <?php if ($row['gender'] == "Male") {
-                                                        echo 'selected';
-                                                    } ?>>Male</option>
-                            <option value="Female" <?php if ($row['gender'] == "Female") {
-                                                        echo 'selected';
-                                                    } ?>>Female</option>
-                        </select>
+
 
                     </td>
                 </tr>

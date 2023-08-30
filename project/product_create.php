@@ -41,20 +41,17 @@
                 $image = htmlspecialchars(strip_tags($image));
 
                 // upload to file to folder
-                $target_directory = "uploads/";
-                $target_file = $target_directory . $image;
-                //pathinfo找是不是.jpg,.png
-                $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
+                $target_file = "";
 
                 $errors = array();
 
                 if ($image) {
+                    $target_directory = "uploads/";
+                    $target_file = $target_directory . $image;
+                    //pathinfo找是不是.jpg,.png
+                    $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
                     $check = getimagesize($_FILES["image"]["tmp_name"]);
-                    $image_width = $check[0];
-                    $image_height = $check[1];
-                    if ($image_width !== $image_height) {
-                        $errors[] = "<div>Only square images are allowed.</div>";
-                    }
+
                     if ($_FILES['image']['size'] > (524288)) {
                         $errors[] = "<div>Image must be less than 512 KB in size.</div>";
                     }
@@ -65,6 +62,12 @@
                     $allowed_file_types = array("jpg", "jpeg", "png", "gif");
                     if (!in_array($file_type, $allowed_file_types)) {
                         $errors[] = "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
+                    } else {
+                        $image_width = $check[0];
+                        $image_height = $check[1];
+                        if ($image_width !== $image_height) {
+                            $errors[] = "<div>Only square images are allowed.</div>";
+                        }
                     }
                     // make sure file does not exist
                     if (file_exists($target_file)) {

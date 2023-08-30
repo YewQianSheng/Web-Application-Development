@@ -23,6 +23,10 @@
         <!-- PHP insert code will be here -->
         <?php
         $order_id = isset($_GET['order_id']) ? $_GET['order_id'] : die('ERROR: Record ID not found.');
+        $action = isset($_GET['action']) ? $_GET['action'] : "";
+        if ($action == 'record_updated') {
+            echo "<div class='alert alert-success m-3'>product record was updated.</div>";
+        }
         date_default_timezone_set('asia/Kuala_Lumpur');
         // include database connection
         include 'config/database.php';
@@ -102,7 +106,27 @@
                         $order_details_stmt->bindParam(":quantity", $quantity[$i]);
                         $order_details_stmt->execute();
                     }
-                    echo "<div class='alert alert-success' role='alert'>Order Placed Successfully.</div>";
+                    $total_amount = 0;
+                    for ($i = 0; $i < $selected_product_count; $i++) {
+                        $price_query = "SELECT * FROM products WHERE id=?";
+                        $price_stmt = $con->prepare($price_query);
+                        $price_stmt->bindParam(1, $product_id[$i]);
+                        $price_stmt->execute();
+                        $prices = $price_stmt->fetch(PDO::FETCH_ASSOC);
+
+                        $amount =  ($prices['promotion_price'] != 0) ?  $prices['promotion_price'] * $quantity[$i] : $prices['price'] * $quantity[$i];
+                        $total_amount += $amount;
+                    }
+                    $order_date = date('Y-m-d H:i:s'); // get the current date and time
+                    $summary_query = "UPDATE order_summary SET  total_amount=:total_amount, order_date=:order_date WHERE order_id=:order_id";
+                    $summary_stmt = $con->prepare($summary_query);
+                    $summary_stmt->bindParam(":order_id", $order_id);
+                    $summary_stmt->bindParam(":total_amount", $total_amount);
+                    $summary_stmt->bindParam(':order_date', $order_date);
+                    $summary_stmt->execute();
+                    echo "<script>
+                    window.location.href = 'order_update.php?order_id={$order_id}&action=record_updated';
+                  </script>";
                     $_POST = array();
                 }
             } catch (PDOException $exception) {
@@ -117,7 +141,7 @@
             <table class='table table-hover table-responsive table-bordered' id="row_del">
 
                 <span>Customer Name</span>
-                <input type="text" readonly class="form-control" value="<?php echo $customer[$order_summaries['customer_id']]['username'] ?>">
+                <input type="text" readonly class="form-control" value="<?php echo $customer[$order_summaries['customer_id'] - 1]['username'] ?>">
                 <br>
 
                 <tr>

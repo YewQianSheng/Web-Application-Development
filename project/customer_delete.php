@@ -11,7 +11,8 @@ try {
     $customer_exist_stmt = $con->prepare($customer_exist_query);
     $customer_exist_stmt->bindParam(1, $id);
     $customer_exist_stmt->execute();
-    $customers = $customer_exist_stmt->fetchAll(PDO::FETCH_ASSOC);
+    $customers = $customer_exist_stmt->fetchColumn();
+
 
     $image_query = "SELECT image FROM customer WHERE id=?";
     $image_stmt = $con->prepare($image_query);

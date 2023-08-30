@@ -34,20 +34,17 @@
                     : "";
                 $image = htmlspecialchars(strip_tags($image));
                 // upload to file to folder
-                $target_directory = "uploads/";
-                $target_file = $target_directory . $image;
-                //pathinfo找是不是.jpg,.png
-                $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
+                $target_file = "";
                 $errors = array();
 
                 // now, if image is not empty, try to upload the image
                 if ($image) {
+
+                    $target_directory = "uploads/";
+                    $target_file = $target_directory . $image;
+                    //pathinfo找是不是.jpg,.png
+                    $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
                     $check = getimagesize($_FILES["image"]["tmp_name"]);
-                    $image_width = $check[0];
-                    $image_height = $check[1];
-                    if ($image_width != $image_height) {
-                        $errors[] = "Only square size image allowed.";
-                    }
                     // make sure submitted file is not too large, can't be larger than 1 MB
                     if ($_FILES['image']['size'] > (524288)) {
                         $errors[] = "<div>Image must be less than 512 KB in size.</div>";
@@ -60,6 +57,12 @@
                     $allowed_file_types = array("jpg", "jpeg", "png", "gif");
                     if (!in_array($file_type, $allowed_file_types)) {
                         $errors[] = "<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
+                    } else {
+                        $image_width = $check[0];
+                        $image_height = $check[1];
+                        if ($image_width != $image_height) {
+                            $errors[] = "Only square size image allowed.";
+                        }
                     }
                     // make sure file does not exist
                     if (file_exists($target_file)) {
@@ -69,13 +72,13 @@
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
                 if (empty($username)) {
-                    $errors[] = "username is required.";
-                } elseif (!preg_match('/^[a-zA-Z][a-zA-Z0-9]{5,}$/', $username)) {
-                    $errors[] = "Username must start with a letter, and cannot have numbers, underscore, or hyphen.";
+                    $errors[] = "Username is required.";
+                } elseif (!preg_match('/^[a-zA-Z0-9]{5,}$/', $username)) {
+                    $errors[] = "Username must start with a letter, and can have numbers, underscore, or hyphen.";
                 }
 
                 if (empty($password)) {
-                    $errors[] = "password is required.";
+                    $errors[] = "Password is required.";
                 } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/', $password)) {
                     $errors[] = "Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.";
                 }
@@ -83,20 +86,26 @@
                 if ($password !== $confirm_password) {
                     $errors[] = "Passwords do not match.";
                 }
-                if (empty($first_name)) {
-                    $errors[] = "First name is required.";
-                }
 
-                if (empty($last_name)) {
-                    $errors[] = "Last name is required.";
-                }
 
                 if (empty($gender)) {
                     $errors[] = "Gender is required.";
                 }
 
+                if (empty($first_name)) {
+                    $errors[] = "First name is required";
+                } elseif (preg_match('/\d/', $first_name)) {
+                    $errors[] = 'First name cannot contain numbers';
+                }
+
+                if (empty($last_name)) {
+                    $errors[] = "Last name is required";
+                } elseif (preg_match('/\d/', $last_name)) {
+                    $errors[] = 'Last name cannot contain numbers';
+                }
+
                 if (empty($email)) {
-                    $errors[] = "email is required.";
+                    $errors[] = "Email is required.";
                 }
 
                 if (empty($birth)) {
@@ -180,7 +189,8 @@
             // show error
             catch (PDOException $exception) {
                 // die('ERROR: ' . $exception->getMessage());
-                if ($exception->getCode() == 23000) {
+                if ($exception->getCode() === 23000) {
+                    var_dump($username);
                     echo '<div class= "alert alert-danger role=alert">' . 'Username or email has been taken' . '</div>';
                 } else {
                     echo '<div class= "alert alert-danger role=alert">' . $exception->getMessage() . '</div>';
@@ -243,7 +253,7 @@
             </div>
             <div class="mb-3">
                 <label for="image" class="form-label">Image:</label><br>
-                <input type="file" class="form-control" name="image" />
+                <input type="file" class="form-control" name="image" accept="image/*" />
             </div>
 
 
