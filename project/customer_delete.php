@@ -27,13 +27,19 @@ try {
     $stmt->bindParam(1, $id);
     if ($customers > 0) {
         header("Location: customer_read.php?action=failed");
-    } else if ($stmt->execute()) {
-        unlink("uploads/" . $image['image']);
-        // redirect to read records page and
-        // tell the user record was deleted
-        header("Location: customer_read.php?action=deleted");
     } else {
-        die('Unable to delete record.');
+        if ($stmt->execute()) {
+            if ($image['image'] != "") {
+                if (file_exists($image['image'])) {
+                    unlink($image['image']);
+                }
+            }
+            // redirect to read records page and
+            // tell the user record was deleted
+            header('Location: customer_read.php?action=deleted');
+        } else {
+            die('Unable to delete record.');
+        }
     }
 }
 // show error

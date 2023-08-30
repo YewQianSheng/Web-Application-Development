@@ -13,12 +13,6 @@ try {
     $product_exist_stmt->execute();
     $products = $product_exist_stmt->fetchColumn();
 
-    if ($products > 0) {
-        header("Location: product_read.php?action=failed");
-        exit; // Terminate the script
-    }
-
-
     $image_query = "SELECT image FROM products WHERE id=?";
     $image_stmt = $con->prepare($image_query);
     $image_stmt->bindParam(1, $id);
@@ -28,13 +22,21 @@ try {
     $query = "DELETE FROM products WHERE id = ?";
     $stmt = $con->prepare($query);
     $stmt->bindParam(1, $id);
-    if ($stmt->execute()) {
-        unlink("uploads/" . $image['image']);
-        // Redirect to read records page and tell the user record was deleted
-        header('Location: product_read.php?action=deleted');
-        exit; // Terminate the script
+    if ($products > 0) {
+        header("Location: product_read.php?action=failed");
     } else {
-        die('Unable to delete record.');
+        if ($stmt->execute()) {
+            if ($image['image'] != "") {
+                if (file_exists($image['image'])) {
+                    unlink($image['image']);
+                }
+            }
+            // redirect to read records page and
+            // tell the user record was deleted
+            header('Location: product_read.php?action=deleted');
+        } else {
+            die('Unable to delete record.');
+        }
     }
 }
 // show error
