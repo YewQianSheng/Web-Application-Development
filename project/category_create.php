@@ -41,7 +41,13 @@
                 if (empty($description)) {
                     $errors[] = 'Description is required.';
                 }
-
+                if (!empty($errors)) {
+                    echo "<div class='alert alert-danger'>";
+                    foreach ($errors as $displayError) {
+                        echo $displayError . "<br>";
+                    }
+                    echo "</div>";
+                }
 
                 // bind the parameters
                 else {
